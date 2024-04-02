@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\VistaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
@@ -15,9 +16,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [VistaController::class, 'index']);
+
+
+//Route::get('/', function () {
+//    return view('/', 'VistaController@index');
+////    return view('master');
+//});
 
 Route::get('/setup', function () {
     $credentials = [
@@ -46,3 +51,9 @@ Route::get('/setup', function () {
         ];
     }
 });
+
+//Manejo de imagenes para evitar el asset() de Laravel
+Route::get('img/{filename}', function ($filename) {
+    return response()->file(public_path('img/' . $filename));
+})->where('filename', '.*');
+
