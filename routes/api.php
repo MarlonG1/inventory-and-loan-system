@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PrestamoHistoricoController;
 use App\Http\Requests\BulkStoreEquipoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
 
     Route::apiResource('usuarios', UsuarioController::class);
     Route::apiResource('prestamos', PrestamoController::class);
+    Route::apiResource('historicos', PrestamoHistoricoController::class);
     Route::apiResource('licencias', LicenciaController::class);
     Route::apiResource('equipos', EquipoController::class);
     Route::Post('equipos/bulk', ['uses' => 'EquipoController@bulkStore']);

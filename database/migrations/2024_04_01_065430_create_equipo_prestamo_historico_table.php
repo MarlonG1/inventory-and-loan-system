@@ -17,7 +17,6 @@ return new class extends Migration
             $table->foreignId('equipo_id')->constrained();
             $table->string('estado')->nullable();
             $table->string('identificador')->nullable();
-            $table->timestamps();
         });
     }
 

@@ -28,8 +28,9 @@ class Equipo extends Model
         return $this->belongsTo(Prestamo::class);
     }
 
-    public function prestamosHistoricos()
+    public function prestamoHistoricos()
     {
+//        return $this->belongsToMany(PrestamoHistorico::class,'equipo_prestamo_historico');
         return $this->belongsToMany(PrestamoHistorico::class,
             'equipo_prestamo_historico',
             'equipo_id',

@@ -42,15 +42,15 @@ class Prestamo extends Model
                 ]);
             }
 
-//            $equiposConDatos = [];
-//            foreach ($prestamo->equipos as $equipo) {
-//                $equiposConDatos[$equipo->id] = [
-//                    'estado' => $equipo->estado,
-//                    'identificador' => $equipo->identificador,
-//                ];
-//            }
-//
-//            $prestamoHistorico->equipos()->attach($equiposConDatos);
+            $equiposConDatos = [];
+            foreach ($prestamo->equipos as $equipo) {
+                $equiposConDatos[$equipo->id] = [
+                    'estado' => $equipo->estado,
+                    'identificador' => $equipo->identificador,
+                ];
+            }
+
+            $prestamoHistorico->equipos()->attach($equiposConDatos);
         });
     }
 
@@ -65,12 +65,12 @@ class Prestamo extends Model
     }
 
     //Me quede aqui
-    public function configure()
-    {
-        return $this->afterCreating(function (Prestamo $prestamo) {
-            // Asociar equipos al préstamo
-            $equipos = Equipo::factory()->count(3)->create(); // Cambia el count según tus necesidades
-            $prestamo->equipos()->saveMany($equipos);
-        });
-    }
+//    public function configure()
+//    {
+//        return $this->afterCreating(function (Prestamo $prestamo) {
+//            // Asociar equipos al préstamo
+//            $equipos = Equipo::factory()->count(3)->create(); // Cambia el count según tus necesidades
+//            $prestamo->equipos()->saveMany($equipos);
+//        });
+//    }
 }

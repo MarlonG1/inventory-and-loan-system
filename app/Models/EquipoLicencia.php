@@ -12,8 +12,8 @@ class EquipoLicencia extends Model
     protected $fillable = [
     ];
 
-    public function equipo()
-    {
-        return $this->belongsTo(Equipo::class);
-    }
+//    public function equipo()
+//    {
+//        return $this->belongsTo(Equipo::class);
+//    }
 }

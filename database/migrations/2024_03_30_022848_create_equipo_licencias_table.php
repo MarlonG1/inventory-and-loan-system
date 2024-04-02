@@ -17,7 +17,6 @@ return new class extends Migration {
             $table->date('fecha_asignacion')->default(now());
             $table->string('estado')->default('Activa');
             $table->string('observaciones')->nullable()->default('Ninguna');
-            $table->timestamps();
         });
     }
 
