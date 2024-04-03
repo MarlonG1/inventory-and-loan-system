@@ -10,4 +10,14 @@ class VistaController extends Controller
     {
         return view('inicio');
     }
+
+    public function login()
+    {
+        return view('login');
+    }
+
+    public function registro()
+    {
+        return view('register');
+    }
 }

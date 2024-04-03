@@ -16,7 +16,7 @@ class PrestamoResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'usuarioId' => $this->usuario_id,
+            'userId' => $this->user_id,
             'asignatura' => $this->asignatura,
             'motivo' => $this->motivo,
             'estado' => $this->estado,

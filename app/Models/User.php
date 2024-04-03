@@ -19,8 +19,15 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'lastname',
         'email',
         'password',
+        'type',
+        'phone',
+        'dui',
+        'carnet',
+        'birth_date',
+        'image',
     ];
 
     /**
@@ -42,4 +49,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function prestamos()
+    {
+        return $this->hasMany(Prestamo::class);
+    }
 }

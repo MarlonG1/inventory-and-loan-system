@@ -23,7 +23,7 @@ class StorePrestamoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'usuarioId' => ['required'],
+            'userId' => ['required'],
             'asignatura' => ['required'],
             'motivo' => ['required'],
             'estado' => ['required', Rule::in(['Activo', 'Pendiente', 'Finalizado'])],
@@ -36,7 +36,7 @@ class StorePrestamoRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'usuario_id' => $this->usuarioId,
+            'user_id' => $this->userId,
             'fecha_prestamo' => $this->fechaPrestamo,
             'hora_inicio' => $this->horaInicio,
             'hora_fin' => $this->horaFin

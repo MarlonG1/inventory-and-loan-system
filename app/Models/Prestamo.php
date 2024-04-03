@@ -26,7 +26,7 @@ class Prestamo extends Model
 //            $prestamo->load('equipos');
             $prestamoHistorico = new PrestamoHistorico([
                 'prestamo_id' => $prestamo->id,
-                'usuario_id' => $prestamo->usuario_id,
+                'user_id' => $prestamo->user_id,
                 'asignatura' => $prestamo->asignatura,
                 'motivo' => $prestamo->motivo,
                 'fecha_prestamo' => $prestamo->fecha_prestamo,
@@ -54,9 +54,9 @@ class Prestamo extends Model
         });
     }
 
-    public function usuario()
+    public function user()
     {
-        return $this->belongsTo(Usuario::class);
+        return $this->belongsTo(User::class);
     }
 
     public function equipos()

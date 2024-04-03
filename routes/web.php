@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [VistaController::class, 'index']);
+Route::get('/login', [VistaController::class, 'login'])->name('login');
+Route::get('/registro', [VistaController::class, 'registro'])->name('registro');
+
 
 
 //Route::get('/', function () {
