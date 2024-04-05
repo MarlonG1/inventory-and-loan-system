@@ -12,5 +12,7 @@
         @yield('content', 'login')
     </div>
 </div>
+@yield('alerts')
+@yield('scripts')
 </body>
 </html>

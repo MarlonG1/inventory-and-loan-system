@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('password');
             $table->string('type');
             $table->string('phone');
-            $table->string('dui');
-            $table->string('carnet');
+            $table->string('dui')->unique();
+            $table->string('carnet')->unique();
             $table->date('birth_date');
             $table->string('image');
             $table->timestamp('email_verified_at')->nullable();

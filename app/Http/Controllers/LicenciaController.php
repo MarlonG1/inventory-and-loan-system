@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Filters\LicenciaFilter;
+use App\Http\Requests\StoreLicenciaRequest;
+use App\Http\Requests\UpdateLicenciaRequest;
 use App\Http\Resources\LicenciaCollection;
 use App\Http\Resources\LicenciaResource;
 use App\Models\Licencia;
-use App\Http\Requests\StoreLicenciaRequest;
-use App\Http\Requests\UpdateLicenciaRequest;
 use Illuminate\Http\Request;
 
 class LicenciaController extends Controller

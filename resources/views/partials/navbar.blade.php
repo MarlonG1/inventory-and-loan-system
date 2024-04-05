@@ -34,7 +34,7 @@
         "></div>
         <div class="d-flex justify-content-end col-sm-4">
             @auth
-                <p class="text-white mr-3 my-0">{{ auth()->user()->nombre }}</p>
+                <p class="text-white mr-3 my-0">{{ auth()->user()->name }}</p>
 
                 <div class="dropdown">
                     <a class="text-white" type="button" id="triggerId" data-toggle="dropdown" aria-haspopup="true"

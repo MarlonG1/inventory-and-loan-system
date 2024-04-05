@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\PrestamoHistoricoController;
 use App\Http\Controllers\UserController;
-use App\Http\Requests\BulkStoreEquipoRequest;
+use App\Http\Requests\Validations\BulkStoreEquipoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrestamoController;

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Filters\UserFilter;
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Http\Requests\StoreUserRequest;
-use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 
 class UserController extends Controller

@@ -12,9 +12,9 @@
 @include('partials.navbar')
 
 <div class="wrapper">
-    @auth
-        @include('administration.sidebar')
-    @endauth
+        @auth
+    @include('administration.sidebar')
+        @endauth
     @yield('content', 'inicio')
 </div>
 
@@ -23,5 +23,14 @@
 @endif
 
 @include('partials.footer')
+
+<script>
+    $(document).ready(function () {
+        $('#sidebarCollapse').on('click', function () {
+            $('#sidebar').toggleClass('active');
+        });
+    });
+</script>
+@yield('scripts')
 </body>
 </html>

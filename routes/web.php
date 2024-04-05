@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LoginController;
 use App\Http\Controllers\VistaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,8 +18,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [VistaController::class, 'index']);
-Route::get('/login', [VistaController::class, 'login'])->name('login');
+Route::get('/perfil', [VistaController::class, 'perfil'])->name('perfil');
+Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
+
+//Usuario
 Route::get('/registro', [VistaController::class, 'registro'])->name('registro');
+Route::post('/registro', [LoginController::class, 'register']);
+
+Route::get('/login', [VistaController::class, 'login'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
 
 
 
