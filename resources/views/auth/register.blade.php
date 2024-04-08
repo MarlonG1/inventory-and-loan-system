@@ -55,33 +55,3 @@
                 sesión.</a></p>
     </form>
 @endsection
-@section('alerts')
-    <div id="error-popup-container" class="overlay d-none">
-        <div id="error-popup" class="alert alert-danger alert-dismissible fade show">
-            <strong><i class="fa-solid fa-circle-exclamation"></i> Errores encontrados:</strong>
-            <ul class="mb-0">
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    </div>
-@endsection
-@section('scripts')
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            @if($errors->any())
-            document.getElementById('error-popup-container').classList.remove('d-none');
-            @endif
-        });
-
-        document.querySelectorAll('[data-dismiss="alert"]').forEach(function(button) {
-            button.addEventListener('click', function() {
-                document.getElementById('error-popup-container').classList.add('d-none');
-            });
-        });
-    </script>
-@endsection

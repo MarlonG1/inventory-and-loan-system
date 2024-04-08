@@ -2,7 +2,8 @@
 @section('title', 'Inicio de sesión')
 
 @section('content')
-    <form method="post">
+    <form method="post" action="{{route('login')}}" enctype="multipart/form-data">
+        @csrf
         <div class="d-flex justify-content-center pb-5">
             <h3 class="mr-3"><strong>Portal de prestamos</strong></h3>
             <img src="/img/logo-transparente.png" width="40px" height="40px" alt="">
@@ -11,7 +12,7 @@
         <div class="form-group pb-3"><input class="form-control" required name="email" type="email"
                                             placeholder="Correo electrónico">
         </div>
-        <div class="form-group"><input class="form-control" required name="password" placeholder="Contraseña">
+        <div class="form-group"><input class="form-control" required name="password" type="password" placeholder="Contraseña">
         </div>
         <div class="form-group pb-2">
             <div class="d-flex justify-content-between">
@@ -28,6 +29,6 @@
             </button>
         </div>
         <p class="text-center">¿No tienes cuenta aun? crea una <a href="{{route('registro')}}" class="color-secundario ">ahora
-                mismo!</a></p>
+                mismo</a>!</p>
     </form>
 @endsection

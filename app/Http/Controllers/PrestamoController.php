@@ -7,8 +7,10 @@ use App\Http\Resources\PrestamoResource;
 use App\Models\Prestamo;
 use App\Http\Requests\StorePrestamoRequest;
 use App\Http\Requests\UpdatePrestamoRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Filters\PrestamoFilter;
+use Psy\Util\Json;
 
 class PrestamoController extends Controller
 {
@@ -20,10 +22,15 @@ class PrestamoController extends Controller
         $filter = new PrestamoFilter();
         $queryItems = $filter->transform($request);
         $includeEquipos = $request->query('includeEquipos');
+        $includeUser = $request->query('includeUser');
         $prestamos = Prestamo::where($queryItems);
 
         if ($includeEquipos) {
             $prestamos = $prestamos->with('equipos');
+        }
+
+        if ($includeUser){
+            $prestamos = $prestamos->with('user');
         }
 
         return new PrestamoCollection($prestamos->paginate()->appends($request->query()));
@@ -78,6 +85,7 @@ class PrestamoController extends Controller
      */
     public function destroy(Prestamo $prestamo)
     {
-        //
+        $prestamo->delete();
+        return Json::encode('message', 'Prestamo eliminado con exito');
     }
 }

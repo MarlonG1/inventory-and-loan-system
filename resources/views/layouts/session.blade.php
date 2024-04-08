@@ -12,7 +12,19 @@
         @yield('content', 'login')
     </div>
 </div>
-@yield('alerts')
+
+@include('errors.popupError')
 @yield('scripts')
+<script>
+    @if($errors->any())
+    document.getElementById('error-popup-container').classList.remove('d-none');
+    @endif
+
+    document.querySelectorAll('[data-dismiss="alert"]').forEach(function (button) {
+        button.addEventListener('click', function () {
+            document.getElementById('error-popup-container').classList.add('d-none');
+        });
+    });
+</script>
 </body>
 </html>

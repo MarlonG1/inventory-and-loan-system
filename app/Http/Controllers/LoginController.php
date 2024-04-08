@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginUsuarioRequest;
 use App\Http\Requests\RegistroUsuarioRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -11,22 +12,21 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    public function authenticate(Request $request): RedirectResponse
+    public function authenticate(LoginUsuarioRequest $request): RedirectResponse
     {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+        $credentials = [
+            'email' => $request->input('email'),
+            'password' => $request->input('password')
+        ];
 
         if (Auth::attempt($credentials, $request->boolean('remember'))) {
             $request->session()->regenerate();
-            return redirect()->intended('inicio');
+            return redirect()->intended('/');
         }
 
-        return back()->withErrors([
-            'email' => 'El correo electronico proporcionado no coincide con nuestros registros.',
-        ])->onlyInput('email');
-
+        return redirect()->back()->withErrors([
+            'email' => 'Las credenciales no coinciden con nuestros registros.',
+        ]);
     }
 
     public function logout(Request $request): RedirectResponse
@@ -35,7 +35,7 @@ class LoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 
     public function register(RegistroUsuarioRequest $request): RedirectResponse

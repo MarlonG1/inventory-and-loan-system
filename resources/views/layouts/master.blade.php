@@ -12,25 +12,20 @@
 @include('partials.navbar')
 
 <div class="wrapper">
-        @auth
-    @include('administration.sidebar')
-        @endauth
+    @auth
+        @if((auth()->user()->type === 'Administrador'))
+            @include('administration.sidebar')
+        @endif
+    @endauth
+
     @yield('content', 'inicio')
 </div>
 
 @if (request()->getRequestUri() === '/')
     @include('partials.carousel')
 @endif
-
 @include('partials.footer')
-
-<script>
-    $(document).ready(function () {
-        $('#sidebarCollapse').on('click', function () {
-            $('#sidebar').toggleClass('active');
-        });
-    });
-</script>
 @yield('scripts')
+<script src="{{asset('js/sidebar.js')}}"></script>
 </body>
 </html>

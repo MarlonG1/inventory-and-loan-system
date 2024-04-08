@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('prestamo_historicos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('prestamo_id')->constrained();
-            $table->foreignId('user_id')->constrained();
+            $table->foreignId('prestamo_id');
+            $table->foreignId('user_id');
             $table->string('asignatura');
             $table->string('motivo');
             $table->date('fecha_prestamo');

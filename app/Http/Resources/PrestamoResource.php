@@ -23,6 +23,7 @@ class PrestamoResource extends JsonResource
             'fechaPrestamo' => $this->fecha_prestamo,
             'horaInicio' => $this->hora_inicio,
             'horaFin' => $this->hora_fin,
+            'user' => new UserResource($this->whenLoaded('user')),
             'equipos' => EquipoResource::collection($this->whenLoaded('equipos'))
         ];
     }

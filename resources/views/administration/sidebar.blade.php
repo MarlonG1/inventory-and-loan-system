@@ -1,4 +1,4 @@
-<nav id="sidebar" class="" style="z-index: 10;">
+<nav id="sidebar" class="active" style="z-index: 10;">
     <div class="sidebar-header">
         <h3 class="text-center"></i>Dashboard <i class="fa-solid fa-gauge mr-3"></i></h3>
     </div>
@@ -15,7 +15,7 @@
                     class="fa-solid fa-table mr-3"></i>Registros</a>
             <ul class="collapse list-unstyled" id="homeSubmenu">
                 <li>
-                    <a href="#">Registros de prestamos</a>
+                    <a href="{{route('registros-prestamos')}}">Registros de prestamos</a>
                 </li>
                 <li>
                     <a href="#">Registros de usuarios</a>

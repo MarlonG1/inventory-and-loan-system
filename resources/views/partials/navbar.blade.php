@@ -2,11 +2,13 @@
     <div class="container-fluid">
         <div class="col-sm-7 d-flex">
             @auth
-                <div class="my-auto mr-3">
-                    <a href="#" id="sidebarCollapse" class="text-white nav-link">
-                        <i class="fas fa-align-left fa-lg ampliar"></i>
-                    </a>
-                </div>
+                @if(auth()->user()->type === 'Administrador')
+                    <div class="my-auto mr-3">
+                        <a href="#" id="sidebarCollapse" class="text-white nav-link">
+                            <i class="fas fa-align-left fa-lg ampliar"></i>
+                        </a>
+                    </div>
+                @endif
             @endauth
 
 
@@ -23,9 +25,13 @@
                        href="/">Inicio</a>
                     <a class="nav-link ampliar" href="#">Catalogo</a>
                     @auth
-                        <a class="nav-link ampliar" href="#">Solicitud de equipos</a>
-                        <a class="nav-link ampliar" href="./index.php?k=./view/administracion/dashboard">Dashboard
-                            <i class="fa-solid fa-gauge ml-1" aria-hidden="true"></i></a>
+                        @if(auth()->user()->type === 'Administrador')
+                            <a class="nav-link ampliar" href="{{route('solicitud-equipo')}}">Solicitud de equipos</a>
+                            <a class="nav-link ampliar" href="./index.php?k=./view/administracion/dashboard">Dashboard
+                                <i class="fa-solid fa-gauge ml-1" aria-hidden="true"></i></a>
+                        @else
+                            <a class="nav-link ampliar" href="{{route('solicitud-equipo')}}">Solicitud de equipos</a>
+                        @endif
                     @endauth
                 </div>
             </div>
@@ -43,16 +49,16 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="triggerId"
                          style="min-width:1rem;left: 50%; transform: translateX(-55%);">
-                        <a class="dropdown-item text-dark" href="#}">Perfil</a>
+                        <a class="dropdown-item text-dark" href="{{route('perfil')}}">Perfil</a>
                         <div class="dropdown-divider"></div>
-                        <form action="#" method="post">
+                        <form action="{{route('logout')}}" method="post">
                             @csrf
                             <button class="dropdown-item" type="submit">Cerrar sesión</button>
                         </form>
                     </div>
                 </div>
             @else
-                <a href="#"><i class="fa-solid fa-user fa-xl ampliar mr-4"></i></a>
+                <a href="{{route('login')}}"><i class="fa-solid fa-user fa-xl ampliar mr-4"></i></a>
             @endauth
         </div>
     </div>
