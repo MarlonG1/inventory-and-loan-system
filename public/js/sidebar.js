@@ -2,6 +2,7 @@ let sidebarState = localStorage.getItem("sidebar");
 let pageURL = window.location.href;
 
 document.addEventListener('DOMContentLoaded', function () {
+
     if (!pageURL.includes("dashboard")) {
         if (sidebarState === "active") {
             $("#sidebar").addClass("active");
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
     } else {
-        $("#sidebar").addClass("");
+        $("#sidebar").removeClass("active");
     }
 });
 

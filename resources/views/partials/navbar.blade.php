@@ -2,7 +2,7 @@
     <div class="container-fluid">
         <div class="col-sm-7 d-flex">
             @auth
-                @if(auth()->user()->type === 'Administrador')
+                @if(auth()->user()->type === 'Administrador' && Route::current()->getName() !== 'dashboard')
                     <div class="my-auto mr-3">
                         <a href="#" id="sidebarCollapse" class="text-white nav-link">
                             <i class="fas fa-align-left fa-lg ampliar"></i>
@@ -27,7 +27,7 @@
                     @auth
                         @if(auth()->user()->type === 'Administrador')
                             <a class="nav-link ampliar" href="{{route('solicitud-equipo')}}">Solicitud de equipos</a>
-                            <a class="nav-link ampliar" href="./index.php?k=./view/administracion/dashboard">Dashboard
+                            <a class="nav-link ampliar" href="{{route('dashboard')}}">Dashboard
                                 <i class="fa-solid fa-gauge ml-1" aria-hidden="true"></i></a>
                         @else
                             <a class="nav-link ampliar" href="{{route('solicitud-equipo')}}">Solicitud de equipos</a>

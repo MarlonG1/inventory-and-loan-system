@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\PdfController;
 use App\Http\Controllers\VistaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -21,6 +22,7 @@ Route::get('/', [VistaController::class, 'index']);
 Route::get('/perfil', [VistaController::class, 'perfil'])->name('perfil');
 Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
 Route::get('/solicitud-equipo', [VistaController::class, 'solicitud_equipo'])->name('solicitud-equipo');
+Route::get('/dashboard', [VistaController::class, 'dashboard'])->name('dashboard');
 
 //Usuario
 Route::get('/registro', [VistaController::class, 'registro'])->name('registro');
@@ -34,6 +36,8 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 //Registros
 
 Route::get('/registros-prestamos', [VistaController::class, 'registro_prestamos'])->name('registros-prestamos');
+
+Route::get('/pdf/{prestamoId}', [VistaController::class, 'viewPdf'])->name('pdf');
 
 
 

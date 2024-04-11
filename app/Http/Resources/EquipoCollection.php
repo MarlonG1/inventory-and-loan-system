@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Equipo;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -14,6 +15,17 @@ class EquipoCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $array = parent::toArray($request);
+
+        $total = [
+            'totalDeEquipos' => Equipo::all()->count(),
+        ];
+
+        $result = [
+            'equipos' => $array,
+            'totales' => $total
+        ];
+
+        return $result;
     }
 }

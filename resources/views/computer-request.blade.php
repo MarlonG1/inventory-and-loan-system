@@ -11,7 +11,7 @@
                     les presto.</p>
             </div>
             <div class="col-md-9 formulario-right">
-                <form method="POST" id="prestamoForm" action="">
+                <form id="prestamoForm" action="">
                     <div class="tab-content">
                         <div class="tab-pane fade show active">
                             <h3 class="formulario-heading">Registro de prestamo</h3>
@@ -21,7 +21,7 @@
                                     <div class="d-flex">
                                         <div class="form-group col-6 pl-0">
                                             <small class="form-text text-muted">Nombre del solicitante</small>
-                                            <select name="solicitante" id="solicitante"
+                                            <select name="userId" id="userId"
                                                     class="selectpicker input_textual form-control"
                                                     data-live-search="true">
                                                 <option value="">Seleccione el usuario</option>
@@ -47,7 +47,7 @@
                                     <div id="equipos-container" style="display: none;"></div>
                                     <div>
                                         <small class=" form-text text-muted">Motivo de la solicitud</small>
-                                        <textarea id="motivoText" name="motivoText"
+                                        <textarea id="motivo" name="motivo"
                                                   placeholder="Ingrese el motivo de la solicitud" value=""></textarea>
                                     </div>
                                     <div class="form-group">
@@ -57,34 +57,34 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="form-group">
-                                        <small class="form-text text-muted">Tipo de solicitante</small>
-                                        <select required class="form-control" name="tipo">
-                                            <option class="hidden" selected disabled>Seleccione el tipo de solicitante
-                                            </option>
-                                            <option>Estudiante</option>
-                                            <option>Docente</option>
-                                        </select>
-                                    </div>
+{{--                                    <div class="form-group">--}}
+{{--                                        <small class="form-text text-muted">Tipo de solicitante</small>--}}
+{{--                                        <select required class="form-control" name="tipo">--}}
+{{--                                            <option class="hidden" selected disabled>Seleccione el tipo de solicitante--}}
+{{--                                            </option>--}}
+{{--                                            <option>Estudiante</option>--}}
+{{--                                            <option>Docente</option>--}}
+{{--                                        </select>--}}
+{{--                                    </div>--}}
                                     <div class="form-group">
                                         <small class="form-text text-muted">Hora de recibido</small>
-                                        <input required type="time" name="horaRecibido" class="form-control"
+                                        <input required type="time" name="horaInicio" class="form-control"
                                                placeholder="Ingrese la hora de recibido" value=""/>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <small class="form-text text-muted">Fecha de solicitud</small>
-                                        <input required type="date" name="fecha" class="form-control" value=""/>
+                                        <input required type="date" name="fechaPrestamo" class="form-control" value=""/>
                                     </div>
 
                                     <div class="form-group">
                                         <small class="form-text text-muted">Hora de entrega</small>
-                                        <input required type="time" minlength="10" maxlength="10" name="horaEntrega"
+                                        <input required type="time" minlength="10" maxlength="10" name="horaFin"
                                                class="form-control" placeholder="Ingrese la hora de entrega" value=""/>
                                     </div>
                                     <div class="d-flex justify-content-end">
-                                        <input required type="submit"
+                                        <input id="enviarForm" required type="submit"
                                                class="btn btn-md btn-primario-claro ampliar text-white"
                                                value="Realizar prestamo"/>
                                     </div>
@@ -100,7 +100,6 @@
 
 @section('scripts')
     <script>
-
         document.getElementById('agregarEquipos').addEventListener('click', function (e) {
             e.preventDefault();
             const cantidad = document.getElementById('cantidad').value;
@@ -129,17 +128,9 @@
                     $(`select`).selectpicker();
                 });
             }
-            container.innerHTML += equipoHTML;
+            container.innerHTML = equipoHTML;
             $(container).slideDown("slow");
         });
-
-        tinymce.init({
-            selector: 'textarea',
-            plugins: 'anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount linkchecker',
-            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
-            height: 250
-        });
-
     </script>
     <script src="{{asset('js/computer-request.js')}}"></script>
 @endsection

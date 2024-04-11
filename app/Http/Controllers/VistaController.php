@@ -6,6 +6,8 @@ use App\Models\Equipo;
 use App\Models\Prestamo;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
+use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class VistaController extends Controller
 {
@@ -29,12 +31,28 @@ class VistaController extends Controller
         return view('profile');
     }
 
+    public function dashboard()
+    {
+        return view('administration.dashboard');
+    }
+
     public function solicitud_equipo()
     {
         $usuarios = User::all()->where('type', 'Administrador');
         $equipos = Equipo::all()->where('estado', '=', 'Disponible');
 
         return view('computer-request', ['usuarios' => $usuarios, 'equipos' => $equipos]);
+    }
+
+    public function viewPdf($prestamoId)
+    {
+        $prestamo = Prestamo::with('equipos')->findOrFail($prestamoId);
+
+        $pdf = PDF::loadView('reports.pdf-prestamos', ['prestamo' => $prestamo], [], [
+            'title' => 'registroNum' . $prestamo->id,
+        ]);
+
+        return $pdf->stream('registroNum' . $prestamo->id . '.pdf');
     }
 
 

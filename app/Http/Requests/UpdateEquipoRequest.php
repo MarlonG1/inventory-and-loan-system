@@ -35,23 +35,22 @@ class UpdateEquipoRequest extends FormRequest
             ];
         } else {
             return [
-                'prestamoId' => ['sometimes' ,'nullable'],
-                'marca' => ['sometimes' ,'required'],
-                'modelo' => ['sometimes' ,'required'],
-                'identificador' => ['sometimes' ,'required'],
-                'estado' => ['sometimes' ,'required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
-                'unidad' => ['sometimes' ,'required'],
-                'observaciones' => ['sometimes' ,'required'],
+                'prestamoId' => ['sometimes', 'nullable'],
+                'marca' => ['sometimes', 'required'],
+                'modelo' => ['sometimes', 'required'],
+                'identificador' => ['sometimes', 'required'],
+                'estado' => ['sometimes', 'required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
+                'unidad' => ['sometimes', 'required'],
+                'observaciones' => ['sometimes', 'required'],
             ];
         }
     }
 
     protected function prepareForValidation()
     {
-        if ($this->prestamoId || $this->prestamoId == null){
-            $this->merge([
-                'prestamo_id' => $this->prestamoId
-            ]);
-        }
+        $this->merge([
+            'prestamo_id' => $this->prestamoId
+        ]);
+
     }
 }

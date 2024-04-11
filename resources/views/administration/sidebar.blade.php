@@ -4,9 +4,9 @@
     </div>
 
     <ul class="list-unstyled components">
-        @if (request()->getRequestUri() != '/Sistemita/dashboard')
+        @if (Route::current()->getName() !== 'dashboard')
             <li>
-                <a href="#" class="text-center">Ir al dashboard</a>
+                <a href="{{route('dashboard')}}" class="text-center">Ir al dashboard</a>
             </li>
         @endif
 

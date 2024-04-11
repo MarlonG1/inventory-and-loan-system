@@ -111,10 +111,10 @@
                                                 </td>
                                                 <td class="administration">
                                                     <div class="d-flex justify-content-center">
-                                                        <button type="button"
+                                                        <a href="{{route('pdf', ['prestamoId' => 2])}}" target="_blank"
                                                                 class="btn btn-registro btn-info mr-1 ampliar">
                                                             <i class="fa-solid fa-file-pdf"></i>
-                                                        </button>
+                                                        </a>
                                                     </div>
                                                 </td>
                                                 <td>

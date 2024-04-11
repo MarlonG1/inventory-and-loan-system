@@ -10,7 +10,7 @@ class Prestamo extends Model
     use HasFactory;
 
     protected $fillable = [
-        'usuario_id',
+        'user_id',
         'asignatura',
         'motivo',
         'estado',
@@ -20,39 +20,32 @@ class Prestamo extends Model
     ];
 
     //me quede en esta wea que no esta funcionando xd
-    protected static function booted()
-    {
-        static::saved(function ($prestamo) {
-//            $prestamo->load('equipos');
-            $prestamoHistorico = new PrestamoHistorico([
-                'prestamo_id' => $prestamo->id,
-                'user_id' => $prestamo->user_id,
-                'asignatura' => $prestamo->asignatura,
-                'motivo' => $prestamo->motivo,
-                'fecha_prestamo' => $prestamo->fecha_prestamo,
-                'hora_inicio' => $prestamo->hora_inicio,
-                'hora_fin' => $prestamo->hora_fin,
-            ]);
-            $prestamoHistorico->save();
-
-            foreach ($prestamo->equipos as $equipo) {
-                $prestamoHistorico->equipos()->attach($equipo->id, [
-                    'estado' => $equipo->estado,
-                    'identificador' => $equipo->identificador,
-                ]);
-            }
-
-            $equiposConDatos = [];
-            foreach ($prestamo->equipos as $equipo) {
-                $equiposConDatos[$equipo->id] = [
-                    'estado' => $equipo->estado,
-                    'identificador' => $equipo->identificador,
-                ];
-            }
-
-            $prestamoHistorico->equipos()->attach($equiposConDatos);
-        });
-    }
+//    protected static function booted()
+//    {
+//        static::saved(function ($prestamo) {
+//           $prestamo->load('equipos');
+//            $prestamoHistorico = new PrestamoHistorico([
+//                'prestamo_id' => $prestamo->id,
+//                'user_id' => $prestamo->user_id,
+//                'asignatura' => $prestamo->asignatura,
+//                'motivo' => $prestamo->motivo,
+//                'fecha_prestamo' => $prestamo->fecha_prestamo,
+//                'hora_inicio' => $prestamo->hora_inicio,
+//                'hora_fin' => $prestamo->hora_fin,
+//            ]);
+//            $prestamoHistorico->save();
+//
+//            $equiposConDatos = [];
+//            foreach ($prestamo->equipos as $equipo) {
+//                $equiposConDatos[$equipo->id] = [
+//                    'estado' => $equipo->estado,
+//                    'identificador' => $equipo->identificador,
+//                ];
+//            }
+//
+//            $prestamoHistorico->equipos()->attach($equiposConDatos);
+//        });
+//    }
 
     public function user()
     {

@@ -23,15 +23,19 @@ class PrestamoController extends Controller
         $queryItems = $filter->transform($request);
         $includeEquipos = $request->query('includeEquipos');
         $includeUser = $request->query('includeUser');
+        $includeAll = $request->query('includeAll');
         $prestamos = Prestamo::where($queryItems);
 
+        if ($includeAll){
+            return new PrestamoCollection($prestamos->get());
+        }
         if ($includeEquipos) {
             $prestamos = $prestamos->with('equipos');
         }
-
         if ($includeUser){
             $prestamos = $prestamos->with('user');
         }
+
 
         return new PrestamoCollection($prestamos->paginate()->appends($request->query()));
     }
@@ -49,6 +53,7 @@ class PrestamoController extends Controller
      */
     public function store(StorePrestamoRequest $request)
     {
+
         return new PrestamoResource(Prestamo::create($request->all()));
     }
 

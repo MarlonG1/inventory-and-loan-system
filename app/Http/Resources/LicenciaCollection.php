@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Licencia;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
@@ -14,6 +15,17 @@ class LicenciaCollection extends ResourceCollection
      */
     public function toArray(Request $request): array
     {
-        return parent::toArray($request);
+        $array = parent::toArray($request);
+
+        $totales = [
+            'totalDeLicencias' => Licencia::all()->count(),
+        ];
+
+        $result = [
+            'licencias' => $array,
+            'totales' => $totales
+        ];
+
+        return $result;
     }
 }
