@@ -25,8 +25,8 @@
                                                     class="selectpicker input_textual form-control"
                                                     data-live-search="true">
                                                 <option value="">Seleccione el usuario</option>
-                                                @foreach($usuarios as $user)
-                                                    <option value="{{$user->id}}">{{$user->name}} {{$user->lastname}}
+                                                @foreach($usuarios as $aula)
+                                                    <option value="{{$aula->id}}">{{$aula->name}} {{$aula->lastname}}
                                                     </option>
                                                 @endforeach
                                             </select>
@@ -57,15 +57,17 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
-{{--                                    <div class="form-group">--}}
-{{--                                        <small class="form-text text-muted">Tipo de solicitante</small>--}}
-{{--                                        <select required class="form-control" name="tipo">--}}
-{{--                                            <option class="hidden" selected disabled>Seleccione el tipo de solicitante--}}
-{{--                                            </option>--}}
-{{--                                            <option>Estudiante</option>--}}
-{{--                                            <option>Docente</option>--}}
-{{--                                        </select>--}}
-{{--                                    </div>--}}
+                                    <div class="form-group">
+                                        <small class="form-text text-muted">Aula</small>
+                                        <select name="aulaId" id="aulaId"
+                                                class="selectpicker input_textual form-control"
+                                                data-live-search="true">
+                                            <option value="">Seleccione el aula</option>
+                                            @foreach($aulas as $aula)
+                                                <option value="{{$aula->id}}">{{$aula->aula}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
                                     <div class="form-group">
                                         <small class="form-text text-muted">Hora de recibido</small>
                                         <input required type="time" name="horaInicio" class="form-control"

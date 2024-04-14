@@ -11,6 +11,7 @@ class Prestamo extends Model
 
     protected $fillable = [
         'user_id',
+        'aula_id',
         'asignatura',
         'motivo',
         'estado',
@@ -50,6 +51,11 @@ class Prestamo extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function aula()
+    {
+        return $this->belongsTo(Aula::class);
     }
 
     public function equipos()

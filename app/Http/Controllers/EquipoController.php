@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Filters\EquipoFilter;
 use App\Http\Requests\BulkStoreEquipoRequest;
-use App\Http\Resources\EquipoCollection;
+use App\Http\Resources\Collection;
 use App\Http\Resources\EquipoResource;
 use App\Models\Equipo;
 use App\Http\Requests\StoreEquipoRequest;
@@ -28,7 +28,7 @@ class EquipoController extends Controller
             $equipos = $equipos->with('licencias');
         }
 
-        return new EquipoCollection($equipos->paginate()->appends($request->query()));
+        return new Collection($equipos->paginate()->appends($request->query()));
     }
 
     /**

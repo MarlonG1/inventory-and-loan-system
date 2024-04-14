@@ -95,13 +95,11 @@
                 ]
 
                 document.getElementById('completeName').textContent = data.name + ' ' + data.lastname;
-                document.getElementById('profile-photo').src = 'img/profile-photos/' + data.image;
+                document.getElementById('profile-photo').src = data.image;
                 valueMapping.forEach((value) => {
-                    document.getElementById(value).textContent = data[value];
+                    document.getElementById(value).textContent = data[value] === null ? 'No definido' : data[value];
                 });
             }
-
-
         });
     </script>
 @endsection

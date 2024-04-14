@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\Collection;
 use App\Http\Resources\PrestamoCollection;
 use App\Http\Resources\PrestamoResource;
 use App\Models\Prestamo;
 use App\Http\Requests\StorePrestamoRequest;
 use App\Http\Requests\UpdatePrestamoRequest;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Filters\PrestamoFilter;
 use Psy\Util\Json;
@@ -27,7 +27,13 @@ class PrestamoController extends Controller
         $prestamos = Prestamo::where($queryItems);
 
         if ($includeAll){
-            return new PrestamoCollection($prestamos->get());
+            $totales = [
+                'totalDeActivos' => Prestamo::all()->where('estado', '=', 'Activo')->count(),
+                'totalDePendientes' => Prestamo::all()->where('estado', '=', 'Pendiente')->count(),
+                'totalDeFinalizados' => Prestamo::all()->where('estado', '=', 'Finalizado')->count(),
+            ];
+
+            return new Collection($prestamos->get(), $totales);
         }
         if ($includeEquipos) {
             $prestamos = $prestamos->with('equipos');
@@ -37,7 +43,7 @@ class PrestamoController extends Controller
         }
 
 
-        return new PrestamoCollection($prestamos->paginate()->appends($request->query()));
+        return new Collection($prestamos->paginate()->appends($request->query()));
     }
 
     /**

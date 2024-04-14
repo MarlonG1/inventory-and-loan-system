@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Filters\PrestamoHistoricoFilter;
-use App\Http\Resources\PrestamoHistoricoCollection;
+use App\Http\Resources\Collection;
 use App\Models\PrestamoHistorico;
 use Illuminate\Http\Request;
 
@@ -23,6 +23,6 @@ class PrestamoHistoricoController extends Controller
             $prestamoHistoricos = $prestamoHistoricos->with('equipos');
         }
 
-        return new PrestamoHistoricoCollection($prestamoHistoricos->paginate()->appends($request->query()));
+        return new Collection($prestamoHistoricos->paginate()->appends($request->query()));
     }
 }

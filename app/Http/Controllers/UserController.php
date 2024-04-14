@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Filters\UserFilter;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserCollection;
+use App\Http\Resources\Collection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -27,7 +27,7 @@ class UserController extends Controller
             $user = $user->with('prestamos');
         }
 
-        return new UserCollection($user->paginate()->appends($request->query()));
+        return new Collection($user->paginate()->appends($request->query()));
     }
 
     /**

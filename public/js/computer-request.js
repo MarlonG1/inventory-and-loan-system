@@ -59,8 +59,6 @@ async function setEquipoToPrestamo(idEquipo, idPrestamo) {
 
     if (!response.ok) {
         console.log('error al setear el equipo al equipo')
-    } else {
-        console.log(await response.json());
     }
 }
 

@@ -41,6 +41,11 @@ body {
     transform: scale(1.1);
 }
 
+.btn-sesiones {
+    background: transparent;
+    border: 2px var(--primario) solid;
+}
+
 .btn-primario {
     background-color: var(--primario);
 }

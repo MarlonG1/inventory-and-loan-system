@@ -30,5 +30,16 @@
         </div>
         <p class="text-center">¿No tienes cuenta aun? crea una <a href="{{route('registro')}}" class="color-secundario ">ahora
                 mismo</a>!</p>
+
+        <div class="d-flex align-items-center">
+            <hr class="w-25" style="border-top: 3px solid rgba(0, 0, 0, .1);">
+            <p class="m-0 font-weight-normal">O continua con</p>
+            <hr class="w-25" style="border-top: 3px solid rgba(0, 0, 0, .1);">
+        </div>
+        <div class="text-center pt-2">
+            <a href="/google-redirect/redirect" class="btn btn-sesiones ampliar">
+                <img width="20px" src="https://www.svgrepo.com/show/475656/google-color.svg" loading="lazy" alt="google logo">
+            </a>
+        </div>
     </form>
 @endsection

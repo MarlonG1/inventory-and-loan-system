@@ -20,18 +20,15 @@ document.addEventListener("DOMContentLoaded", async function () {
             'licencias': data[2],
         }
 
-        //Var deconstruction to get totals of items
-        const {
-            equipos: {data: {totales: {totalDeEquipos}}},
-            licencias: {data: {totales: {totalDeLicencias}}}
-        } = dataProcessed;
+        console.log(dataProcessed.prestamos)
+
         const cardHeadersValue = {
-            totalEquipos: totalDeEquipos,
-            totalLicencias: totalDeLicencias,
+            totalEquipos: dataProcessed.equipos.meta.total,
+            totalLicencias: dataProcessed.licencias.meta.total,
         };
 
         setCardsValues(cardHeadersValue);
-        actualizarInformacion(dataProcessed.prestamos.data)
+        actualizarInformacion(dataProcessed.prestamos)
     } catch (e) {
         console.log('Algo salio mal: ' + e)
     }
@@ -42,10 +39,10 @@ function setCardsValues(headers) {
     document.getElementById("totalLicencias").innerText = headers.totalLicencias;
 }
 
-function actualizarInformacion(data) {
-    setPrestamoStatusPieChart(data.totales);
-    setPrestamoTimeLineByWeek(data.prestamos);
-    setPrestamoTimeLineByMonth(data.prestamos);
+function actualizarInformacion(prestamos) {
+    setPrestamoStatusPieChart(prestamos.otherInformation);
+    setPrestamoTimeLineByWeek(prestamos.data);
+    setPrestamoTimeLineByMonth(prestamos.data);
 }
 
 function setPrestamoStatusPieChart(datadb) {
@@ -106,7 +103,7 @@ function setPrestamoTimeLineByMonth(datadb) {
 
     const prestamos = Array.from({length: 12}, (_, index) => {
         return datadb.filter((prestamo) => {
-            const fechaPrestamo = new Date(prestamo.fechaPrestamo);
+            const fechaPrestamo = new Date(prestamo.fecha_prestamo);
             return fechaPrestamo.getFullYear() === currentYear && fechaPrestamo.getMonth() === index;
         }).length;
     });
@@ -157,15 +154,18 @@ function setPrestamoTimeLineByWeek(datadb) {
     ];
 
     const currentDate = new Date();
-    const startOfWeek = new Date(currentDate.getFullYear(), currentDate.getMonth(), currentDate.getDate() - currentDate.getDay());
+    const currentDayOfWeek = currentDate.getUTCDay();
+    const startOfWeek = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(),
+        currentDate.getUTCDate() - (currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1)));
 
-    const prestamos = Array.from({ length: 7 }, (_, index) => {
-        const dayOfWeek = new Date(startOfWeek.getTime() + index * 24 * 60 * 60 * 1000);
+    const prestamos = Array.from({length: 7}, (_, index) => {
+        const dayOfWeekStart = new Date(startOfWeek.getTime() + index * 24 * 60 * 60 * 1000);
+        const dayOfWeekEnd = new Date(dayOfWeekStart.getTime() + 24 * 60 * 60 * 1000 - 1);
         return datadb.filter((prestamo) => {
-            const fechaPrestamo = new Date(prestamo.fechaPrestamo);
+            const fechaPrestamo = new Date(prestamo.fecha_prestamo);
             return (
-                fechaPrestamo >= dayOfWeek &&
-                fechaPrestamo < new Date(dayOfWeek.getTime() + 24 * 60 * 60 * 1000)
+                fechaPrestamo >= dayOfWeekStart &&
+                fechaPrestamo <= dayOfWeekEnd
             );
         }).length;
     });

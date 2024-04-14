@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('prestamos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
+            $table->foreignId('aula_id')->nullable()->constrained();
             $table->string('asignatura');
             $table->text('motivo');
             $table->string('estado')->nullable()->default('Activo');

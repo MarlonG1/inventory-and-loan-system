@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AulaController;
 use App\Http\Controllers\PrestamoHistoricoController;
 use App\Http\Controllers\UserController;
 use App\Http\Requests\Validations\BulkStoreEquipoRequest;
@@ -31,6 +32,7 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('historicos', PrestamoHistoricoController::class);
     Route::apiResource('licencias', LicenciaController::class);
     Route::apiResource('equipos', EquipoController::class);
+    Route::apiResource('aulas', AulaController::class);
     Route::Post('equipos/bulk', ['uses' => 'EquipoController@bulkStore']);
 
 });

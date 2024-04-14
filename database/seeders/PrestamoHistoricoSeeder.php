@@ -20,6 +20,7 @@ class PrestamoHistoricoSeeder extends Seeder
         $prestamos->each(function ($prestamo) {
             $prestamoHistorico = new PrestamoHistorico([
                 'prestamo_id' => $prestamo->id,
+                'aula_id' => $prestamo->aula_id,
                 'user_id' => $prestamo->user_id,
                 'asignatura' => $prestamo->asignatura,
                 'motivo' => $prestamo->motivo,

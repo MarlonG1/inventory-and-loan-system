@@ -232,6 +232,7 @@
     $user = $prestamo->user;
     $fechaPrestamo = date('d/m/y', strtotime($prestamo->fecha_prestamo));
     $cantidad = count($prestamo->equipos);
+    $aula = $prestamo->aula
 @endphp
 
 <htmlpagefooter name="myfooter">
@@ -290,6 +291,13 @@
                                                 {{$user->email}} <br/>
                                                 {{$user->phone}}<br/>
                                                 {{$user->carnet ?? ''}}<br/>
+                                            </p>
+                                        </div>
+                                        <br>
+                                        <div class="invoice-info">
+                                            <h2 class="inv-title-1" style="font-size: 18px; color: #9a2323;">Aula asignada al prestamo</h2>
+                                            <p class="invo-addr-1" style="color:#535353;">
+                                                {{$aula->aula}}
                                             </p>
                                         </div>
                                     </td>

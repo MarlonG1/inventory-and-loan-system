@@ -1,7 +1,8 @@
 <?php
 
+use App\Models\User;
+use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\LoginController;
-use App\Http\Controllers\PdfController;
 use App\Http\Controllers\VistaController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -19,6 +20,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [VistaController::class, 'index']);
+
+Route::get('/google-redirect/redirect', function () {
+    return Socialite::driver('google')->redirect();
+});
+
+Route::get('/google-redirect/callback', function () {
+    $user_google = Socialite::driver('google')->stateless()->user();
+
+    $user = User::firstOrCreate([
+        'google_id' => $user_google->id,
+    ], [
+        'name' => $user_google->user['given_name'],
+        'lastname' => $user_google->user['family_name'],
+        'email' => $user_google->email,
+        'type' => 'Estudiante',
+        'image' => $user_google->avatar,
+    ]);
+
+    Auth::login($user);
+    return redirect('/');
+});
+
 Route::get('/perfil', [VistaController::class, 'perfil'])->name('perfil');
 Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
 Route::get('/solicitud-equipo', [VistaController::class, 'solicitud_equipo'])->name('solicitud-equipo');

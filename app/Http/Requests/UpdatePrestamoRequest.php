@@ -26,6 +26,7 @@ class UpdatePrestamoRequest extends FormRequest
         if ($method == 'PUT') {
             return [
                 'userId' => ['required'],
+                'aulaId' => ['required'],
                 'asignatura' => ['required'],
                 'motivo' => ['required'],
                 'estado' => ['required', Rule::in(['Activo', 'Pendiente', 'Finalizado'])],
@@ -48,8 +49,8 @@ class UpdatePrestamoRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $camposRequest = ['userId', 'fechaPrestamo', 'horaInicio', 'horaFin'];
-        $camposBD = ['user_id', 'fecha_prestamo', 'hora_inicio', 'hora_fin'];
+        $camposRequest = ['userId', 'aulaId', 'fechaPrestamo', 'horaInicio', 'horaFin'];
+        $camposBD = ['user_id', 'aula_id', 'fecha_prestamo', 'hora_inicio', 'hora_fin'];
 
         foreach ($camposRequest as $key => $value) {
             if ($this->$value) {

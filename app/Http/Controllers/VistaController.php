@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Aula;
 use App\Models\Equipo;
 use App\Models\Prestamo;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
 use Mccarlosen\LaravelMpdf\Facades\LaravelMpdf as PDF;
 
 class VistaController extends Controller
@@ -40,13 +39,14 @@ class VistaController extends Controller
     {
         $usuarios = User::all()->where('type', 'Administrador');
         $equipos = Equipo::all()->where('estado', '=', 'Disponible');
+        $aulas = Aula::all();
 
-        return view('computer-request', ['usuarios' => $usuarios, 'equipos' => $equipos]);
+        return view('computer-request', ['usuarios' => $usuarios, 'equipos' => $equipos, 'aulas' => $aulas]);
     }
 
     public function viewPdf($prestamoId)
     {
-        $prestamo = Prestamo::with('equipos')->findOrFail($prestamoId);
+        $prestamo = Prestamo::with('equipos', 'aula')->findOrFail($prestamoId);
 
         $pdf = PDF::loadView('reports.pdf-prestamos', ['prestamo' => $prestamo], [], [
             'title' => 'registroNum' . $prestamo->id,

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Filters\LicenciaFilter;
 use App\Http\Requests\StoreLicenciaRequest;
 use App\Http\Requests\UpdateLicenciaRequest;
-use App\Http\Resources\LicenciaCollection;
+use App\Http\Resources\Collection;
 use App\Http\Resources\LicenciaResource;
 use App\Models\Licencia;
 use Illuminate\Http\Request;
@@ -26,7 +26,7 @@ class LicenciaController extends Controller
             $licencias = $licencias->with('equipos');
         }
 
-        return new LicenciaCollection($licencias->paginate()->appends($request->query()));
+        return new Collection($licencias->paginate()->appends($request->query()));
     }
 
     /**
