@@ -17,12 +17,12 @@ class EquipoFactory extends Factory
     public function definition(): array
     {
         return [
-            'marca' => $this->faker->name(),
-            'modelo' => $this->faker->name(),
-            'identificador' => $this->faker->name(),
+            'marca' => $this->faker->randomElement(['HP', 'Dell', 'Apple', 'Lenovo', 'Asus', 'Acer', 'Samsung', 'Sony', 'Toshiba', 'MSI', 'Alienware', 'Compaq', 'Gateway', 'IBM', 'LG', 'Microsoft', 'Panasonic', 'Razer', 'Vizio', 'Xiaomi']),
+            'modelo' => $this->faker->words(1, true),
+            'identificador' => $this->faker->unique()->numerify('####-PC-###'),
             'estado' => $this->faker->randomElement(['Disponible', 'En reparación', 'Ocupado']),
-            'unidad' => 100,
-            'observaciones' => $this->faker->name(),
+            'observaciones' => $this->faker->sentence(5),
+            'imagen' => $this->faker->imageUrl(640, 480, 'animals', true),
         ];
     }
 }

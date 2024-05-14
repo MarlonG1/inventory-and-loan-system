@@ -7,21 +7,27 @@ use App\Http\Requests\FormRequest\RegistroUsuarioRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Hash;
+use Laravel\Sanctum\PersonalAccessToken;
 
 class LoginController extends Controller
 {
-    public function authenticate(LoginUsuarioRequest $request): RedirectResponse
+    public function authenticate(LoginUsuarioRequest $request)
     {
         $credentials = [
             'email' => $request->input('email'),
             'password' => $request->input('password')
         ];
 
-        if (Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (Auth::attempt($credentials)) {
+            $user = Auth::user();
+
+            $token = $this->generateToken($user);
             $request->session()->regenerate();
-            return redirect()->intended('/');
+            return view('inicio', ['token' => $token]);
         }
 
         return redirect()->back()->withErrors([
@@ -29,13 +35,16 @@ class LoginController extends Controller
         ]);
     }
 
+
+
     public function logout(Request $request): RedirectResponse
     {
-        Auth::logout();
+        $cookie = Cookie::forget('auth_cookie');
+        Auth::guard('web')->logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        return redirect('/login')->withCookie($cookie);
     }
 
     public function register(RegistroUsuarioRequest $request): RedirectResponse
@@ -43,15 +52,15 @@ class LoginController extends Controller
         $file = $request->file('image');
         $fileExtension = $file->getClientOriginalExtension();
         $fileName = $request->input('email') . '.' . $fileExtension;
-        $file->move(public_path() . 'img/profile-photos/', $fileName);
+        $file->move(public_path() . '/img/profile-photos/', $fileName);
 
         User::create([
+            'departamento_id' => $request->input('departamentoId'),
             'name' => $request->input('name'),
             'lastname' => $request->input('lastname'),
             'phone' => $request->input('phone'),
             'birth_date' => $request->input('birthDate'),
             'type' => 'Estudiante',
-            'dui' => $request->input('dui'),
             'carnet' => $request->input('carnet'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
@@ -59,6 +68,15 @@ class LoginController extends Controller
         ]);
 
         return redirect('/login');
+    }
+
+    protected function generateToken($user)
+    {
+        if($user->type === 'Administrador'){
+            return $user->createToken('auth_cookie', ['create', 'update', 'delete'], now()->addHours(2))->plainTextToken;
+        }
+
+        return $user->createToken('auth_cookie', ['create'], now()->addHours(2))->plainTextToken;
     }
 
 }

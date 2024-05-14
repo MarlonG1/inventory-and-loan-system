@@ -23,13 +23,13 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'departamento_id' => ['required'],
             'name' => ['required'],
             'lastname' => ['required'],
             'email' => ['required', 'email'],
             'password' => ['required'],
             'type' => ['required', Rule::in(['Estudiante', 'Docente', 'Administrador'])],
             'phone' => ['required'],
-            'dui' => ['required'],
             'carnet' => ['required'],
             'birthDate' => ['required'],
         ];
@@ -38,7 +38,8 @@ class StoreUserRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'birth_date' => $this->birthDate
+            'birth_date' => $this->birthDate,
+            'departamento_id' => $this->departamento_id,
         ]);
     }
 }

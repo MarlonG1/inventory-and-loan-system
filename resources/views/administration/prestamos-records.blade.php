@@ -29,16 +29,13 @@
                                 </div>
                                 <div class="col-sm-7 col-12 text-right my-auto">
                                     <div class="btn_group">
-                                        <a href="#" id="limpiarBusqueda" onclick="limpiarBusqueda();"
+                                        <a href="#" id="limpiarBusqueda" onclick="cleanSearchInput()"
                                            style="display:none;"><i
                                                 class="fa-solid fa-x text-white mr-1 ampliar"></i></a>
                                         <input type="text" class="form-control busqueda" placeholder="Buscar..." value>
                                         <button class="btn btn-default ampliar" title="Reload" onclick="refrescar()"><i
                                                 class="fas fa-sync-alt"></i></button>
-                                        <a target="_blank" href="./view/facturacion/rep_solicitud.php"
-                                           class="btn btn-default ampliar" title="Pdf"><i
-                                                class="fas fa-file-pdf"></i></a>
-                                        <a href="./index.php?k=./view/solicitud-equipo" class="btn btn-default ampliar"
+                                        <a href="/solicitud-equipo" class="btn btn-default ampliar"
                                            title="Agregar"><i class="fa-solid fa-plus"></i></a>
                                     </div>
                                     <div class="d-flex justify-content-end pt-3">
@@ -102,8 +99,8 @@
                                                 <td class="requestDate"></td>
                                                 <td class="time"></td>
                                                 <td class="status">
-                                                    <a href="#" class="abrir-modal-cambiarEstado" data-toggle="modal"
-                                                       data-target="#cambiarEstado">
+                                                    <a href="#" class="open-chageStatus-modal" data-toggle="modal"
+                                                       data-target="#changeStatus">
                                                         <p
                                                             class="estado activo d-flex align-content-center justify-content-center">
                                                         </p>
@@ -111,27 +108,32 @@
                                                 </td>
                                                 <td class="administration">
                                                     <div class="d-flex justify-content-center">
-                                                        <a href="{{route('pdf', ['prestamoId' => 2])}}" target="_blank"
-                                                                class="btn btn-registro btn-info mr-1 ampliar">
+                                                        <a href="/pdf/541" target="_blank"
+                                                           class="btn btn-registro btn-primario-claro mr-1 ampliar report text-white">
                                                             <i class="fa-solid fa-file-pdf"></i>
                                                         </a>
+                                                        <button type="button"
+                                                                class="btn text-white btn-registro btn-info px-2 ampliar open-computers-modal"
+                                                                data-toggle="modal" data-target="#showComputers">
+                                                            <i class="fa-solid fa-laptop"></i>
+                                                        </button>
                                                     </div>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex">
                                                         <button type="button"
-                                                                class="btn btn-registro btn-info mr-1 ampliar abrir-modal-editar"
-                                                                data-toggle="modal" data-target="#editar">
+                                                                class="btn btn-registro btn-info mr-1 ampliar open-edit-modal"
+                                                                data-toggle="modal" data-target="#edit">
                                                             <i class="fa-solid fa-pencil"></i>
                                                         </button>
                                                         <button type="button"
-                                                                class="btn btn-registro btn-details mr-1 ampliar abrir-modal-motivo"
-                                                                data-toggle="modal" data-target="#motivo">
+                                                                class="btn btn-registro btn-details mr-1 ampliar open-reason-modal"
+                                                                data-toggle="modal" data-target="#viewReason">
                                                             <i class="fa-solid fa-book"></i>
                                                         </button>
                                                         <button type="button"
-                                                                class="btn btn-danger btn-registro mr-1 ampliar abrir-modal-eliminar"
-                                                                data-toggle="modal" data-target="#eliminar">
+                                                                class="btn btn-danger btn-registro mr-1 ampliar open-delete-modal"
+                                                                data-toggle="modal" data-target="#delete">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </button>
                                                     </div>
@@ -188,7 +190,339 @@
             </div>
         </div>
     </div>
+
+    {{-- Modales --}}
+
+    <form method="POST" id="deleteForm">
+        <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="eliminarTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="eliminarTitle">Eliminar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="eliminarBody">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" name="id" class="form-control text-center"/>
+                        </div>
+                        <p class="text-center">¿Está seguro que desea eliminarlo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="changeStatusForm" method="POST">
+        <div class="modal fade" id="changeStatus" tabindex="-1" role="dialog" aria-labelledby="cambiarEstadoTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="cambiarEstadoTitle">Cambiar estado
+                        </h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="cambiarEstadoBody">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" name="id" class="form-control text-center"/>
+                        </div>
+                        <div class="form-group">
+                            <small class="form-text text-muted">Estado</small>
+                            <select required class="form-control" name="estado">
+                                <option class="hidden" selected disabled>Seleccione el estado</option>
+                                <option>Activo</option>
+                                <option>Pendiente</option>
+                                <option>Finalizado</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <form id="viewReasonForm" method="POST">
+        <div class="modal fade" id="viewReason" tabindex="-1" role="dialog" aria-labelledby="motivoTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="motivoTitle">Motivo del préstamo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="motivoBody">
+                        <div class="form-group col-sm-2 mx-auto" style="display:none;">
+                            <input type="text" name="id" class="form-control text-center"/>
+                        </div>
+                        <textarea name="motivo" id="motivo"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="modal fade" id="showComputers" tabindex="-1" role="dialog" aria-labelledby="showComputersTitle"
+         aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title text-center" id="showComputersTitle">Equipos asignados al préstamo</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body px-5 py-4" id="eliminarBody">
+                    <table class="tabla-reporte" width="100%" style="border: 0">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Equipo</th>
+                            <th>Identificador</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody class="report-tbody">
+                        <tr class="report-row-template">
+                            <td class="id"></td>
+                            <td class="equipo"></td>
+                            <td class="identifcador"></td>
+                            <td class="estado"></td>
+                        </tr>
+                        <tr class="report-row-sin-resultados" style="display: none;">
+                            <td colspan="4" class="text-center">No hay equipos asignados...</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="editForm" method="POST">
+        <div id="edit" class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog"
+             aria-labelledby="myLargeModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="editTitle">Editar prestamo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body px-5 py-4" id="editBody">
+                        <form id="prestamoForm" action="">
+                            <div class="tab-content">
+                                <div class="tab-pane fade show active">
+                                    <div class="row formulario-form">
+                                        <div class="col-12">
+                                            <div class="d-flex">
+                                                <input type="number" name="id" id="id" style="display: none">
+                                                <div class="form-group col-6 pl-0">
+                                                    <small class="form-text text-muted">Nombre del solicitante</small>
+                                                    <select name="userId" id="userId"
+                                                            class="selectpicker input_textual form-control"
+                                                            data-live-search="true">
+                                                        <option value="">Seleccione el usuario</option>
+                                                        @foreach($usuarios as $usuario)
+                                                            <option
+                                                                value="{{$usuario->id}}">{{$usuario->name}} {{$usuario->lastname}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                </div>
+                                                <div class="form-group col-6 pr-0">
+                                                    <small class="form-text text-muted">Agregar más equipos</small>
+                                                    <div class=" d-flex">
+                                                        <input required autocomplete="off" type="number" name="cantidad"
+                                                               id="cantidad" class="form-control"
+                                                               placeholder="Agregar más equipos"
+                                                               value=""/>
+                                                        <a href="#" onclick="" id="agregarEquipos"
+                                                           class="btn btn-primario-claro ampliar text-white"><i
+                                                                class="fa-solid fa-check"></i></a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div id="equipos-container"></div>
+                                            <div id="nuevo-equipo-container"></div>
+                                            <div>
+                                                <small class=" form-text text-muted">Motivo de la solicitud</small>
+                                                <textarea id="motivo-edit" name="motivo"
+                                                          placeholder="Ingrese el motivo de la solicitud"
+                                                          value=""></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Carrera</small>
+                                                <select name="carreraId" id="carreraId"
+                                                        class="selectpicker input_textual form-control"
+                                                        data-live-search="true">
+                                                    <option value="" selected disabled>Seleccione la asignatura
+                                                    </option>
+                                                    @foreach($carreras as $carrera)
+                                                        <option
+                                                            value="{{$carrera->id}}">{{$carrera->nombre}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Asignatura</small>
+                                                <select name="asignaturaId" id="asignaturaId"
+                                                        class="selectpicker input_textual form-control"
+                                                        data-live-search="true">
+                                                    <option value="" selected disabled>Seleccione la asignatura
+                                                    </option>
+                                                    @foreach($asignaturas as $asignatura)
+                                                        <option
+                                                            value="{{$asignatura->id}}">{{$asignatura->nombre}}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Aula</small>
+                                                <select name="aulaId" id="aulaId"
+                                                        class="selectpicker input_textual form-control"
+                                                        data-live-search="true">
+                                                    <option value="">Seleccione el aula</option>
+                                                    @foreach($aulas as $aula)
+                                                        <option value="{{$aula->id}}">{{$aula->aula}}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Hora de recibido</small>
+                                                <input required type="time" name="horaInicio" class="form-control"
+                                                       placeholder="Ingrese la hora de recibido" value=""/>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Fecha de solicitud</small>
+                                                <input required type="date" name="fechaPrestamo" class="form-control"
+                                                       value=""/>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <small class="form-text text-muted">Hora de entrega</small>
+                                                <input required type="time" minlength="10" maxlength="10" name="horaFin"
+                                                       class="form-control" placeholder="Ingrese la hora de entrega"
+                                                       value=""/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                        <button type="submit" class="btn btn-success">Guardar cambios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+
 @endsection
 @section('scripts')
+    <script>
+        document.getElementById('agregarEquipos').addEventListener('click', function (e) {
+            e.preventDefault();
+            const cantidad = document.getElementById('cantidad').value;
+            localStorage.setItem('equipos', cantidad);
+            const container = document.getElementById('nuevo-equipo-container');
+            $(container).slideUp(200);
+            container.innerHTML = '';
+
+            let equipoHTML = [];
+            for (let i = 1; i <= cantidad; i++) {
+                let camposDobles = i % 2 !== 0;
+                let colClass = (i + 1) > cantidad && camposDobles ? 'col-sm-12' : 'col-sm-6';
+
+                equipoHTML.push(`
+                    ${camposDobles ? '<div class="d-flex">' : ''}
+                        <div class="form-group ${colClass}">
+                            <small class="form-text text-muted">Nuevo equipo #${i}</small>
+                            <select name="nuevoEquipo${i}" id="nuevoEquipo${i}" class=" input_textual form-control" data-live-search="true">
+                                <option value="" selected disabled>Seleccione el equipo</option>
+                                @foreach($equiposDisponibles as $equipo)
+                    <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
+                                @endforeach
+                    </select>
+                </div>
+${!camposDobles ? '</div>' : ''}`
+                );
+            }
+            equipoHTML = equipoHTML.join('');
+
+            container.innerHTML = equipoHTML;
+            Array.from(container.getElementsByTagName('select')).forEach((elemento) => {
+                $(function () {
+                    $(elemento).selectpicker();
+                });
+            });
+
+            $(container).slideDown("slow");
+        });
+
+
+        function setEquiposToEdit(equiposId) {
+            const container = document.getElementById('equipos-container');
+            container.innerHTML = '';
+            let equipoHTML = [];
+            for (let i = 1; i <= equiposId.length; i++) {
+                let camposDobles = i % 2 !== 0;
+                let colClass = (i + 1) > equiposId.length && camposDobles ? 'col-sm-12' : 'col-sm-6';
+
+                equipoHTML.push(`
+                    ${camposDobles ? '<div class="d-flex justify-content-center">' : ''}
+                        <div class="form-group ${colClass}">
+                            <small class="form-text text-muted">Equipo #${i}</small>
+                            <select name="equipo${i}" id="equipo${i}" class=" input_textual form-control disable" data-live-search="true">
+                                <option value="" selected disabled>Seleccione el equipo</option>
+                                @foreach($equiposOcupados as $equipo)
+                    <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
+                                @endforeach
+                    </select>
+                </div>
+                <a href="#" onclick="showDeleteAlert(${equiposId[i - 1]})" class="d-flex align-items-center pt-2 open-delete-equipo-modal"><i class="fa-solid fa-xmark fa-lg" style="color: #df2020;"></i></a>
+${!camposDobles ? '</div>' : ''}`
+                );
+
+            }
+            equipoHTML = equipoHTML.join('');
+            container.innerHTML = equipoHTML;
+            let cont = 0;
+            Array.from(container.getElementsByTagName('select')).forEach((elemento) => {
+                $(function () {
+                    $(elemento).selectpicker();
+                    $(elemento).selectpicker('val', equiposId[cont] + "");
+                    // $(elemento).prop('disabled', true);
+                    // $(elemento).selectpicker('refresh');
+                    cont++;
+                });
+            });
+        }
+    </script>
     <script src="{{asset('js/prestamos-records.js')}}"></script>
 @endsection

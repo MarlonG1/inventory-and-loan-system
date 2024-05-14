@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('google_id')->nullable();
+            $table->foreignId('departamento_id')->nullable()->constrained('departamentos')->onDelete('no action');
             $table->string('name');
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('password')->nullable();
             $table->string('type');
             $table->string('phone')->nullable();
-            $table->string('dui')->nullable()->unique();
             $table->string('carnet')->nullable()->unique();
             $table->date('birth_date')->nullable();
             $table->string('image');

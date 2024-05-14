@@ -14,7 +14,8 @@ return new class extends Migration {
             $table->id();
             $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('aula_id')->nullable()->constrained();
-            $table->string('asignatura');
+            $table->foreignId('carrera_id')->nullable()->constrained();
+            $table->foreignId('asignatura_id')->nullable()->constrained();
             $table->text('motivo');
             $table->string('estado')->nullable()->default('Activo');
             $table->date('fecha_prestamo');

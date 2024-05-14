@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Filters\ApiSearchTrait;
 use App\Http\Resources\Collection;
-use App\Http\Resources\PrestamoCollection;
 use App\Http\Resources\PrestamoResource;
+use App\Http\Traits\SearchTrait;
 use App\Models\Prestamo;
 use App\Http\Requests\StorePrestamoRequest;
 use App\Http\Requests\UpdatePrestamoRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Filters\PrestamoFilter;
+use Illuminate\Support\Facades\DB;
+use Mpdf\Tag\Pre;
 use Psy\Util\Json;
+use function PHPUnit\Framework\isEmpty;
 
 class PrestamoController extends Controller
 {
@@ -21,30 +26,63 @@ class PrestamoController extends Controller
     {
         $filter = new PrestamoFilter();
         $queryItems = $filter->transform($request);
-        $includeEquipos = $request->query('includeEquipos');
-        $includeUser = $request->query('includeUser');
+        $searchTerm = $request->query('searchTerm');
+        $include = $request->query('include', '');
         $includeAll = $request->query('includeAll');
         $prestamos = Prestamo::where($queryItems);
 
-        if ($includeAll){
-            $totales = [
-                'totalDeActivos' => Prestamo::all()->where('estado', '=', 'Activo')->count(),
-                'totalDePendientes' => Prestamo::all()->where('estado', '=', 'Pendiente')->count(),
-                'totalDeFinalizados' => Prestamo::all()->where('estado', '=', 'Finalizado')->count(),
+        $prestamosTotales = [
+            'totalDeActivos' => Prestamo::where('estado', 'Activo')->count(),
+            'totalDeFinalizados' => Prestamo::where('estado', 'Finalizado')->count(),
+            'totalDePendientes' => Prestamo::where('estado', 'Pendiente')->count(),
+        ];
+
+        if ($includeAll) {
+            $prestamos = $prestamos->orderBy('fecha_prestamo', 'desc');
+            return new Collection($prestamos->get(), $prestamosTotales);
+        } else if ($searchTerm) {
+            $tables = ['prestamos', 'users', 'equipos', 'asignaturas'];
+            $fields = [
+                'prestamos' => ['estado'],
+                'users' => ['name', 'lastname'],
+                'equipos' => [],
+                'asignaturas' => ['nombre'],
+            ];
+            $joins = [
+                [
+                    'table' => 'users',
+                    'firstKey' => 'prestamos.user_id',
+                    'secondKey' => 'users.id',
+                ],
+                [
+                    'table' => 'equipos',
+                    'firstKey' => 'prestamos.id',
+                    'secondKey' => 'equipos.prestamo_id',
+                ],
+                [
+                    'table' => 'asignaturas',
+                    'firstKey' => 'prestamos.asignatura_id',
+                    'secondKey' => 'asignaturas.id',
+                ],
             ];
 
-            return new Collection($prestamos->get(), $totales);
-        }
-        if ($includeEquipos) {
-            $prestamos = $prestamos->with('equipos');
-        }
-        if ($includeUser){
-            $prestamos = $prestamos->with('user');
-        }
+            $prestamos = Prestamo::searchQuery($searchTerm, $tables, $fields, $joins);
+            return new Collection($prestamos, $prestamosTotales);
 
+        } else {
 
-        return new Collection($prestamos->paginate()->appends($request->query()));
+            if ($include !== '') {
+                $include = explode(',', $request->query('include', ''));
+                foreach ($include as $relation) {
+                    $prestamos = $prestamos->with($relation);
+                }
+            }
+
+            $prestamos = $prestamos->orderBy('id', 'desc')->paginate()->appends($request->query());
+            return new Collection($prestamos, $prestamosTotales);
+        }
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -88,15 +126,42 @@ class PrestamoController extends Controller
      */
     public function update(UpdatePrestamoRequest $request, Prestamo $prestamo)
     {
-        $prestamo->update($request->all());
+        try {
+            $prestamo->update($request->all());
+            return response()->json(['icon' => 'success', 'title' => 'Actualización exitosa', 'text' => 'Prestamo actualizado correctamente', 'id' => $prestamo->id]);
+        } catch (\Throwable $e) {
+            return response()->json(['icon' => 'error', 'title' => 'Actualización fallida', 'text' => 'Ocurrió un error al intentar actualizar el préstamo']);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Prestamo $prestamo)
+    public function destroy($id)
     {
-        $prestamo->delete();
-        return Json::encode('message', 'Prestamo eliminado con exito');
+        try {
+            $prestamo = Prestamo::with('equipos')->findOrFail($id);
+
+            foreach ($prestamo->equipos as $equipo) {
+                $equipo->estado = "Disponible";
+                $equipo->save();
+            }
+
+            $prestamo->delete();
+
+            return response()->json(['icon' => 'success', 'title' => 'Eliminacion exitosa', 'text' => 'Préstamo eliminado correctamente'], 200);
+        } catch (\Exception $e) {
+            $errorMessage = 'Ocurrió un error al intentar eliminar el préstamo';
+
+            if ($e instanceof ModelNotFoundException) {
+                $errorMessage = 'No se encontró el préstamo especificado';
+                $statusCode = 400;
+            } else {
+                $statusCode = 500;
+            }
+
+            return response()->json(['icon' => 'error', 'title' => 'Eliminación fallida', 'text' => $errorMessage], $statusCode);
+        }
     }
 }
+

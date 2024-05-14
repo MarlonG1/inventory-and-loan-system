@@ -3,7 +3,6 @@
 use App\Http\Controllers\AulaController;
 use App\Http\Controllers\PrestamoHistoricoController;
 use App\Http\Controllers\UserController;
-use App\Http\Requests\Validations\BulkStoreEquipoRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrestamoController;
@@ -21,12 +20,11 @@ use App\Http\Controllers\EquipoController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-//Autenticación 'middleware' => 'auth:sanctum'
-Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function () {
+//Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//    return $request->user();
+//});
 
+Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers', 'middleware' => 'auth:api'], function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('prestamos', PrestamoController::class);
     Route::apiResource('historicos', PrestamoHistoricoController::class);
@@ -34,5 +32,4 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers'], function
     Route::apiResource('equipos', EquipoController::class);
     Route::apiResource('aulas', AulaController::class);
     Route::Post('equipos/bulk', ['uses' => 'EquipoController@bulkStore']);
-
 });

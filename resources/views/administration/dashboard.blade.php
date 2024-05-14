@@ -108,6 +108,14 @@
 @endsection
 
 @section('scripts')
+    <script>
+        const usersByDepartament = @json($usuariosPorDepartamentos);
+
+        const departamentosObj = {};
+        usersByDepartament.forEach(item => {
+            departamentosObj[item.departamento] = item.cantidad;
+        });
+    </script>
     <script type="module" src="js/dashboard.js"></script>
     <script type="text/javascript" src="js/mapa/mapdata.js"></script>
     <script type="text/javascript" src="js/mapa/countrymap.js"></script>

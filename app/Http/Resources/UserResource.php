@@ -19,13 +19,13 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'lastname' => $this->lastname,
             'email' => $this->email,
-            'password' => $this->password,
             'type' => $this->type,
             'phone' => $this->phone,
             'dui' => $this->dui,
             'carnet' => $this->carnet,
             'birthDate' => $this->birth_date,
             'image' => $this->image,
+            'departamento' => new DepartamentoResource($this->whenLoaded('departamento')),
             'prestamos' => PrestamoResource::collection($this->whenLoaded('prestamos'))
         ];
     }

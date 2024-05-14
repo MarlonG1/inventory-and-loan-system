@@ -12,10 +12,9 @@ class BulkStoreEquipoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        //Manejo de autenticacion en API
-//        $user = $this->user();
-//        return $user != null && $user->tokenCan('delete');
-        return true;
+        $user = $this->user();
+        return $user != null && $user->tokenCan('delete');
+
     }
 
     /**
@@ -26,7 +25,6 @@ class BulkStoreEquipoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            '*.prestamoId' => ['required', 'integer'],
             '*.marca' => ['required', 'string'],
             '*.modelo' => ['required', 'string'],
             '*.identificador' => ['required', 'string'],

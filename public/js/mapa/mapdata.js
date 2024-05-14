@@ -5,7 +5,7 @@ var simplemaps_countrymap_mapdata={
     background_color: "#FFFFFF",
     background_transparent: "yes",
     border_color: "#ffffff",
-    
+
     //State defaults
     state_description: "State description",
     state_color: "#88A4BC",
@@ -14,7 +14,7 @@ var simplemaps_countrymap_mapdata={
     border_size: 1.5,
     all_states_inactive: "no",
     all_states_zoomable: "yes",
-    
+
     //Location defaults
     location_description: "Location description",
     location_url: "",
@@ -29,7 +29,7 @@ var simplemaps_countrymap_mapdata={
     location_hover_border: 2.5,
     all_locations_inactive: "no",
     all_locations_hidden: "no",
-    
+
     //Label defaults
     label_color: "#ffffff",
     label_hover_color: "#ffffff",
@@ -39,7 +39,7 @@ var simplemaps_countrymap_mapdata={
     label_scale: "yes",
     hide_labels: "no",
     hide_eastern_labels: "no",
-   
+
     //Zoom settings
     zoom: "yes",
     manual_zoom: "yes",
@@ -52,7 +52,7 @@ var simplemaps_countrymap_mapdata={
     zoom_out_incrementally: "yes",
     zoom_percentage: 0.99,
     zoom_time: 0.5,
-    
+
     //Popup settings
     popup_color: "white",
     popup_opacity: 0.9,
@@ -60,7 +60,7 @@ var simplemaps_countrymap_mapdata={
     popup_corners: 5,
     popup_font: "12px/1.5 Verdana, Arial, Helvetica, sans-serif",
     popup_nocss: "no",
-    
+
     //Advanced settings
     div: "map",
     auto_load: "yes",
@@ -78,85 +78,85 @@ var simplemaps_countrymap_mapdata={
       name: "Ahuachapán",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 375,796"
+      description: "Población estudiantil: " + departamentosObj['Ahuachapán']
     },
     SVCA: {
       name: "Cabañas",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 174,094"
+      description: "Población estudiantil: " + departamentosObj['Cabañas']
     },
     SVCH: {
       name: "Chalatenango",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 210,845"
+      description: "Población estudiantil: " + departamentosObj['Chalatenango']
     },
     SVCU: {
       name: "Cuscatlán",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 276,004"
+      description: "Población estudiantil: " + departamentosObj['Cuscatlán']
     },
     SVLI: {
       name: "La Libertad",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 830,976"
+      description: "Población estudiantil: " + departamentosObj['La Libertad']
     },
     SVMO: {
       name: "Morazán",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 211,201"
+      description: "Población estudiantil: " + departamentosObj['Morazán']
     },
     SVPA: {
       name: "La Paz",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 375,457"
+      description: "Población estudiantil: " + departamentosObj['La Paz']
     },
     SVSA: {
       name: "Santa Ana",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 602,636"
+      description: "Población estudiantil: " + departamentosObj['Santa Ana']
     },
     SVSM: {
       name: "San Miguel",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 516,241"
+      description: "Población estudiantil: " + departamentosObj['San Miguel']
     },
     SVSO: {
       name: "Sonsonate",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 520,778"
+      description: "Población estudiantil: " + departamentosObj['Sonsonate']
     },
     SVSS: {
       name: "San Salvador",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 1,817,579"
+      description: "Población estudiantil: " + departamentosObj['San Salvador']
     },
     SVSV: {
       name: "San Vicente",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 190,093"
+      description: "Población estudiantil: " + departamentosObj['San Vicente']
     },
     SVUN: {
       name: "La Unión",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 277,731"
+      description: "Población estudiantil: " + departamentosObj['La Unión']
     },
     SVUS: {
       name: "Usulután",
       color: "#9a2323",
       hover_color: "#700e0e",
-      description: "Población: 386,322"
+      description: "Población estudiantil: " + departamentosObj['Usulután']
     }
   },
   locations: {},

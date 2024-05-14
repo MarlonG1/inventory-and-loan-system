@@ -49,8 +49,8 @@ class EquipoController extends Controller
 
     public function bulkStore(BulkStoreEquipoRequest $request)
     {
-        $bulk = collect($request->all())->map(function ($arr,$key) {
-           return Arr::except($arr, ['prestamoId']);
+        $bulk = collect($request->all())->map(function ($arr, $key) {
+            return Arr::except($arr, ['prestamoId']);
         });
         Equipo::insert($bulk->toArray());
     }
@@ -80,7 +80,12 @@ class EquipoController extends Controller
      */
     public function update(UpdateEquipoRequest $request, Equipo $equipo)
     {
-        $equipo->update($request->all());
+        try {
+            $equipo->update($request->all());
+            return response()->json(['icon' => 'success', 'title' => 'Actualización exitosa', 'text' => 'Equipo actualizado con exito']);
+        } catch (\Exception $e) {
+            return response()->json(['icon' => 'error', 'title' => 'Actualización fallida', 'text' => 'No se pudo actualizar el equipo']);
+        }
     }
 
     /**

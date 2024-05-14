@@ -2,23 +2,32 @@
 
 namespace App\Models;
 
+use App\Http\Resources\PrestamoResource;
+use App\Http\Traits\SearchTrait;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Prestamo extends Model
 {
     use HasFactory;
+    use SearchTrait;
 
     protected $fillable = [
         'user_id',
         'aula_id',
-        'asignatura',
+        'carrera_id',
+        'asignatura_id',
         'motivo',
         'estado',
         'fecha_prestamo',
         'hora_inicio',
         'hora_fin',
     ];
+
+    protected $model = self::class;
+    protected $relations = ['user', 'equipos', 'asignatura'];
 
     //me quede en esta wea que no esta funcionando xd
 //    protected static function booted()
@@ -48,19 +57,41 @@ class Prestamo extends Model
 //        });
 //    }
 
-    public function user()
+    public function user() : BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function aula()
+    public function aula() : BelongsTo
     {
         return $this->belongsTo(Aula::class);
     }
 
-    public function equipos()
+    public function equipos() : HasMany
     {
         return $this->hasMany(Equipo::class);
+    }
+
+    public function carrera() : BelongsTo
+    {
+        return $this->belongsTo(Carrera::class);
+    }
+
+    public function asignatura() : BelongsTo
+    {
+        return $this->belongsTo(Asignatura::class);
+    }
+
+    //Metodos de objeto
+
+    public function getModel()
+    {
+        return app($this->model);
+    }
+
+    public function getRelations()
+    {
+        return property_exists($this, 'relations') ? $this->relations : [];
     }
 
     //Me quede aqui
@@ -68,7 +99,7 @@ class Prestamo extends Model
 //    {
 //        return $this->afterCreating(function (Prestamo $prestamo) {
 //            // Asociar equipos al préstamo
-//            $equipos = Equipo::factory()->count(3)->create(); // Cambia el count según tus necesidades
+//            $equipos = Equipo::factory()->count(3)->create();
 //            $prestamo->equipos()->saveMany($equipos);
 //        });
 //    }

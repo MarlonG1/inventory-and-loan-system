@@ -9,6 +9,8 @@ use App\Http\Resources\Collection;
 use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use function PHPUnit\Framework\isEmpty;
 
 class UserController extends Controller
 {
@@ -17,14 +19,16 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-
         $filter = new UserFilter();
+        $include = $request->query('include', '');
         $queryItems = $filter->transform($request);
-        $includePrestamos = $request->query('includePrestamos');
         $user = User::where($queryItems);
 
-        if ($includePrestamos) {
-            $user = $user->with('prestamos');
+        if ($include !== '') {
+            $include = explode(',', $request->query('include', ''));
+            foreach ($include as $relation) {
+                $user = $user->with($relation);
+            }
         }
 
         return new Collection($user->paginate()->appends($request->query()));
@@ -51,9 +55,13 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        $includePrestamos = request()->query('includePrestamos');
-        if ($includePrestamos) {
-            return new UserResource($user->loadMissing('prestamos'));
+        $include = request()->query('include', '');
+        if ($include !== '') {
+            $include = explode(',', request()->query('include', ''));
+            foreach ($include as $relation) {
+                $user = $user->loadMissing($relation);
+            }
+            return new UserResource($user);
         }
         return new UserResource($user);
     }

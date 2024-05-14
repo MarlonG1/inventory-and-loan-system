@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\SendEmailController;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\LoginController;
@@ -19,12 +20,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [VistaController::class, 'index']);
-
 Route::get('/google-redirect/redirect', function () {
     return Socialite::driver('google')->redirect();
 });
-
 Route::get('/google-redirect/callback', function () {
     $user_google = Socialite::driver('google')->stateless()->user();
 
@@ -42,32 +40,33 @@ Route::get('/google-redirect/callback', function () {
     return redirect('/');
 });
 
-Route::get('/perfil', [VistaController::class, 'perfil'])->name('perfil');
-Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
-Route::get('/solicitud-equipo', [VistaController::class, 'solicitud_equipo'])->name('solicitud-equipo');
-Route::get('/dashboard', [VistaController::class, 'dashboard'])->name('dashboard');
+Route::group([],function () {
+    Route::get('/', [VistaController::class, 'index']);
+    Route::get('/faqs', [VistaController::class, 'faqs'])->name('faqs');
+    Route::get('/registro', [VistaController::class, 'registro'])->name('registro');
+    Route::get('/login', [VistaController::class, 'login'])->name('authenticate');
+    Route::post('/registro', [LoginController::class, 'register']);
+    Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+});
 
-//Usuario
-Route::get('/registro', [VistaController::class, 'registro'])->name('registro');
-Route::post('/registro', [LoginController::class, 'register']);
+Route::middleware('auth:sanctum')->group(function () {
+    //Usuario
+    Route::get('/perfil', [VistaController::class, 'perfil'])->name('perfil');
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/login', [VistaController::class, 'login'])->name('authenticate');
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login');
+    //Solicitud
+    Route::get('/solicitud-equipo', [VistaController::class, 'solicitud_equipo'])->name('solicitud-equipo');
 
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    //Reportes
+    Route::get('/pdf/{prestamoId}', [VistaController::class, 'viewPdf'])->name('pdf');
+    Route::get('/send/informationEmail/{prestamoId}', [SendEmailController::class, 'send'])->name('sendInformationEmail');
 
-//Registros
-
-Route::get('/registros-prestamos', [VistaController::class, 'registro_prestamos'])->name('registros-prestamos');
-
-Route::get('/pdf/{prestamoId}', [VistaController::class, 'viewPdf'])->name('pdf');
-
-
-
-//Route::get('/', function () {
-//    return view('/', 'VistaController@index');
-////    return view('master');
-//});
+    //Administracion
+    Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
+    Route::get('/pos', [VistaController::class, 'pointOfSale'])->name('pos');
+    Route::get('/dashboard', [VistaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/registros-prestamos', [VistaController::class, 'registro_prestamos'])->name('registros-prestamos');
+});
 
 Route::get('/setup', function () {
     $credentials = [
@@ -78,6 +77,9 @@ Route::get('/setup', function () {
     if (!Auth::attempt($credentials)) {
         $user = new \App\Models\User();
         $user->name = 'Admin';
+        $user->lastname = 'Admin';
+        $user->type = 'Administrador';
+        $user->image= '';
         $user->email = $credentials['email'];
         $user->password = Hash::make($credentials['password']);
         $user->save();
@@ -86,13 +88,9 @@ Route::get('/setup', function () {
     if (Auth::attempt($credentials)) {
         $user = Auth::user();
         $adminToken = $user->createToken('admin-token', ['create', 'update', 'delete']);
-        $updateToken = $user->createToken('update-token', ['create', 'update']);
-        $basicToken = $user->createToken('basic-token');
 
         return [
             'admin' => $adminToken->plainTextToken,
-            'update' => $updateToken->plainTextToken,
-            'basic' => $basicToken->plainTextToken
         ];
     }
 });

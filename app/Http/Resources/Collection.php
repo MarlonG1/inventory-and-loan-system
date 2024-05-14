@@ -26,6 +26,7 @@ class Collection extends ResourceCollection
         if (!empty($this->secondArg)) {
             return [
                 'data' => $this->collection,
+                'count' => $this->collection->count(),
                 'otherInformation' => $this->secondArg,
             ];
         }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Cookie;
 use Illuminate\Validation\Rule;
 
 class StorePrestamoRequest extends FormRequest
@@ -12,7 +13,9 @@ class StorePrestamoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+
+        $user = $this->user();
+        return $user != null && $user->tokenCan('create');
     }
 
     /**
@@ -25,7 +28,8 @@ class StorePrestamoRequest extends FormRequest
         return [
             'userId' => ['required'],
             'aulaId' => ['required'],
-            'asignatura' => ['required'],
+            'carreraId' => ['required'],
+            'asignaturaId' => ['required'],
             'motivo' => ['required'],
             'estado' => ['required', Rule::in(['Activo', 'Pendiente', 'Finalizado'])],
             'fechaPrestamo' => ['required'],
@@ -34,11 +38,13 @@ class StorePrestamoRequest extends FormRequest
         ];
     }
 
-    protected function prepareForValidation()
+    protected function prepareForValidation() : void
     {
         $this->merge([
             'user_id' => $this->userId,
             'aula_id' => $this->aulaId,
+            'carrera_id' => $this->carreraId,
+            'asignatura_id' => $this->asignaturaId,
             'fecha_prestamo' => $this->fechaPrestamo,
             'hora_inicio' => $this->horaInicio,
             'hora_fin' => $this->horaFin

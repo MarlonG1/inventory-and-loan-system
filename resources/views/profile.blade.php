@@ -56,9 +56,9 @@
                                 </div>
                                 <p id='carnet' class="col-sm-3 text-secondary m-0"></p>
                                 <div class="col-sm-3">
-                                    <h6 class="mb-0">DUI</h6>
+                                    <h6 class="mb-0">Departamento</h6>
                                 </div>
-                                <p id='dui' class=" text-secondary m-0"></p>
+                                <p id='departamento' class=" text-secondary m-0"></p>
                             </div>
                         </div>
                     </div>
@@ -66,13 +66,18 @@
             </div>
         </div>
     </div>
-
+@endsection
+@section('scripts')
     <script>
-        const userId =  {{auth()->user()->id}};
-
+        const userId = {{auth()->user()->id}};
         document.addEventListener("DOMContentLoaded", async function () {
-            const response = await fetch('api/v1/users/' + userId, {
+            const response = await fetch('api/v1/users/' + userId + '?include=departamento', {
                 method: "GET",
+                credentials: 'include',
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json",
+                },
             });
 
             if (response.ok) {
@@ -83,7 +88,7 @@
                 console.log("Error al cargar los datos del usuario")
             }
 
-            function setUserValues(data){
+            function setUserValues(data) {
                 const valueMapping = [
                     'name',
                     'type',
@@ -91,15 +96,16 @@
                     'birthDate',
                     'phone',
                     'carnet',
-                    'dui'
                 ]
 
                 document.getElementById('completeName').textContent = data.name + ' ' + data.lastname;
+                document.getElementById('departamento').textContent = data.departamento === null ? 'No definido' : data.departamento.nombre;
                 document.getElementById('profile-photo').src = data.image;
                 valueMapping.forEach((value) => {
                     document.getElementById(value).textContent = data[value] === null ? 'No definido' : data[value];
                 });
             }
-        });
+        })
+            ;
     </script>
 @endsection

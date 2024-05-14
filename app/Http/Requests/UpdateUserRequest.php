@@ -22,39 +22,45 @@ class UpdateUserRequest extends FormRequest
      */
     public function rules(): array
     {
-      $method = $this->method();
-      if ($method == 'PUT'){
-          return[
-              'name' => ['required'],
-              'lastname' => ['required'],
-              'email' => ['required', 'email'],
-              'password' => ['required'],
-              'type' => ['required', Rule::in(['Estudiante', 'Docente', 'Administrador'])],
-              'phone' => ['required'],
-              'dui' => ['required'],
-              'carnet' => ['required'],
-              'birthDate' => ['required'],
-          ];
-      } else {
-          return[
-              'name' => ['sometimes', 'required'],
-              'lastname' => ['sometimes', 'required'],
-              'email' => ['sometimes', 'required', 'email'],
-              'password' => ['sometimes', 'required'],
-              'type' => ['sometimes', 'required', Rule::in(['Estudiante', 'Docente', 'Administrador'])],
-              'phone' => ['sometimes', 'required'],
-              'dui' => ['sometimes', 'required'],
-              'carnet' => ['sometimes', 'required'],
-              'birthDate' => ['sometimes', 'required'],
-          ];
-      }
+        $method = $this->method();
+        if ($method == 'PUT') {
+            return [
+                'departamento_id' => ['required'],
+                'name' => ['required'],
+                'lastname' => ['required'],
+                'email' => ['required', 'email'],
+                'password' => ['required'],
+                'type' => ['required', Rule::in(['Estudiante', 'Docente', 'Administrador'])],
+                'phone' => ['required'],
+                'carnet' => ['required'],
+                'birthDate' => ['required'],
+            ];
+        } else {
+            return [
+                'departamento_id' => ['sometimes', 'required'],
+                'name' => ['sometimes', 'required'],
+                'lastname' => ['sometimes', 'required'],
+                'email' => ['sometimes', 'required', 'email'],
+                'password' => ['sometimes', 'required'],
+                'type' => ['sometimes', 'required', Rule::in(['Estudiante', 'Docente', 'Administrador'])],
+                'phone' => ['sometimes', 'required'],
+                'carnet' => ['sometimes', 'required'],
+                'birthDate' => ['sometimes', 'required'],
+            ];
+        }
     }
+
     protected function prepareForValidation()
     {
-        if ($this->birthDate){
-            $this->merge([
-                'birth_date' => $this->birthDate
-            ]);
+        $camposRequest = ['birthDate', 'departamentoId'];
+        $camposBD = ['birth_date', 'departamento_id'];
+
+        foreach ($camposRequest as $key => $value) {
+            if ($this->$value) {
+                $this->merge([
+                    $camposBD[$key] => $this->$value
+                ]);
+            }
         }
     }
 }

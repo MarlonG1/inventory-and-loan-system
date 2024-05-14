@@ -21,27 +21,58 @@
                                     <div class="d-flex">
                                         <div class="form-group col-6 pl-0">
                                             <small class="form-text text-muted">Nombre del solicitante</small>
-                                            <select name="userId" id="userId"
-                                                    class="selectpicker input_textual form-control"
-                                                    data-live-search="true">
-                                                <option value="">Seleccione el usuario</option>
-                                                @foreach($usuarios as $aula)
-                                                    <option value="{{$aula->id}}">{{$aula->name}} {{$aula->lastname}}
-                                                    </option>
-                                                @endforeach
-                                            </select>
+                                            @auth
+                                                @if(auth()->user()->type === 'Administrador')
+                                                    <select name="userId" id="userId"
+                                                            class="selectpicker input_textual form-control"
+                                                            data-live-search="true">
+                                                        <option value="">Seleccione el usuario</option>
+                                                        @foreach($usuarios as $usuario)
+                                                            <option
+                                                                value="{{$usuario->id}}">{{$usuario->name}} {{$usuario->lastname}}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+                                                @else
+                                                    <input name="userId" id="userId" style="display: none;"
+                                                           value="{{auth()->user()->id}}"/>
+                                                    <p style="color: #6c757d !important;">{{auth()->user()->name}} {{auth()->user()->lastname}}
+                                                    </p>
+                                                @endif
+                                            @endauth
+
                                         </div>
                                         <div class="form-group col-6 pr-0">
-                                            <small class="form-text text-muted">Cantidad de equipos</small>
-                                            <div class=" d-flex">
-                                                <input required autocomplete="off" type="number" name="cantidad"
-                                                       id="cantidad" class="form-control"
-                                                       placeholder="Cantidad de equipos"
-                                                       value=""/>
-                                                <a href="#" onclick="" id="agregarEquipos"
-                                                   class="btn btn-primario-claro ampliar text-white"><i
-                                                        class="fa-solid fa-check"></i></a>
-                                            </div>
+                                            @auth
+                                                @if(auth()->user()->type !== 'Estudiante')
+                                                    <small class="form-text text-muted">Cantidad de equipos</small>
+                                                    <div class=" d-flex">
+                                                        <input required autocomplete="off" type="number" name="cantidad"
+                                                               id="cantidad" class="form-control"
+                                                               placeholder="Cantidad de equipos"
+                                                               value=""/>
+                                                        <a href="#" onclick="" id="agregarEquipos"
+                                                           class="btn btn-primario-claro ampliar text-white"><i
+                                                                class="fa-solid fa-check"></i></a>
+                                                    </div>
+                                                @else
+                                                    <div class="form-group col-sm-12">
+                                                        <small class="form-text text-muted">Equipo</small>
+                                                        <select name="equipo1" id="equipo1"
+                                                                class="selectpicker input_textual form-control"
+                                                                data-live-search="true">
+                                                            <option value="" selected disabled>Seleccione el equipo
+                                                            </option>
+                                                            @foreach($equipos as $equipo)
+                                                                <option
+                                                                    value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}}
+                                                                    ({{$equipo->identificador}})
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                @endif
+                                            @endauth
                                         </div>
                                     </div>
                                     <div id="equipos-container" style="display: none;"></div>
@@ -51,9 +82,32 @@
                                                   placeholder="Ingrese el motivo de la solicitud" value=""></textarea>
                                     </div>
                                     <div class="form-group">
+                                        <small class="form-text text-muted">Carrera</small>
+                                        <select name="carreraId" id="carreraId"
+                                                class="selectpicker input_textual form-control"
+                                                data-live-search="true">
+                                            <option value="" selected disabled>Seleccione la asignatura
+                                            </option>
+                                            @foreach($carreras as $carrera)
+                                                <option
+                                                    value="{{$carrera->id}}">{{$carrera->nombre}}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
                                         <small class="form-text text-muted">Asignatura</small>
-                                        <input required autocomplete="off" type="text" name="asignatura"
-                                               class="form-control" placeholder="Ingrese la asignatura" value=""/>
+                                        <select name="asignaturaId" id="asignaturaId"
+                                                class="selectpicker input_textual form-control"
+                                                data-live-search="true">
+                                            <option value="" selected disabled>Seleccione la asignatura
+                                            </option>
+                                            @foreach($asignaturas as $asignatura)
+                                                <option
+                                                    value="{{$asignatura->id}}">{{$asignatura->nombre}}
+                                                </option>
+                                            @endforeach
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="col-md-6">
@@ -102,6 +156,8 @@
 
 @section('scripts')
     <script>
+        @if(auth()->user()->type !== 'Estudiante')
+
         document.getElementById('agregarEquipos').addEventListener('click', function (e) {
             e.preventDefault();
             const cantidad = document.getElementById('cantidad').value;
@@ -109,30 +165,39 @@
             const container = document.getElementById('equipos-container');
             $(container).slideUp(200);
             container.innerHTML = '';
-            let equipoHTML = '';
 
+            let equipoHTML = [];
             for (let i = 1; i <= cantidad; i++) {
-                let camposDobles = i % 2 !== 0
-                equipoHTML += `
-                ${camposDobles ? '<div class="d-flex">' : ''}
-                <div class="form-group ${(i + 1) > cantidad && camposDobles ? 'col-sm-12' : 'col-sm-6'}">
-                    <small class="form-text text-muted">Equipo #${i}</small>
-                    <select name="equipo${i}" id="equipo${i}" class=" input_textual form-control" data-live-search="true">
-                        <option value="" selected disabled>Seleccione el equipo</option>
-                        @foreach($equipos as $equipo)
-                <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
-                        @endforeach
-                </select>
-            </div>
-            ${!camposDobles ? '</div>' : ''}`;
+                let camposDobles = i % 2 !== 0;
+                let colClass = (i + 1) > cantidad && camposDobles ? 'col-sm-12' : 'col-sm-6';
+
+                equipoHTML.push(`
+                    ${camposDobles ? '<div class="d-flex">' : ''}
+                        <div class="form-group ${colClass}">
+                            <small class="form-text text-muted">Equipo #${i}</small>
+                            <select name="equipo${i}" id="equipo${i}" class=" input_textual form-control" data-live-search="true">
+                                <option value="" selected disabled>Seleccione el equipo</option>
+                                @foreach($equipos as $equipo)
+                    <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
+                                @endforeach
+                    </select>
+                </div>
+${!camposDobles ? '</div>' : ''}`
+                );
 
                 $(function () {
                     $(`select`).selectpicker();
                 });
             }
+            equipoHTML = equipoHTML.join('');
+
             container.innerHTML = equipoHTML;
             $(container).slideDown("slow");
         });
+
+        @else
+        localStorage.setItem('equipos', 1);
+        @endif
     </script>
     <script src="{{asset('js/computer-request.js')}}"></script>
 @endsection

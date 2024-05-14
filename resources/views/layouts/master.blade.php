@@ -8,24 +8,39 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title')</title>
 </head>
-<body>
+<body onload="hideLoading()">
 @include('partials.navbar')
 
-<div class="wrapper">
-    @auth
-        @if((auth()->user()->type === 'Administrador'))
-            @include('administration.sidebar')
-        @endif
-    @endauth
+<div class="content-loading">
+    <div id="loading">
+        <div id="loader"></div>
+    </div>
 
-    @yield('content', 'inicio')
+    <div class="wrapper">
+        @auth
+            @if((auth()->user()->type === 'Administrador'))
+                @include('administration.sidebar')
+            @endif
+        @endauth
+
+        @yield('content', 'inicio')
+    </div>
 </div>
 
 @if (request()->getRequestUri() === '/')
     @include('partials.carousel')
 @endif
+
+@include('partials.helpButton')
 @include('partials.footer')
 @yield('scripts')
+@vite(['resources/js/app.js'])
 <script src="{{asset('js/sidebar.js')}}"></script>
+<script src="{{asset('js/miscellaneous.js')}}"></script>
+<script>
+    function hideLoading() {
+        document.getElementById('loading').style.display = 'none';
+    }
+</script>
 </body>
 </html>

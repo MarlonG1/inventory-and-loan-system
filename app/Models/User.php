@@ -4,6 +4,8 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -19,6 +21,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'google_id',
+        'departamento_id',
         'name',
         'lastname',
         'email',
@@ -51,8 +54,13 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
-    public function prestamos()
+    public function prestamos() : HasMany
     {
         return $this->hasMany(Prestamo::class);
+    }
+
+    public function departamento() : belongsTo
+    {
+        return $this->belongsTo(Departamento::class);
     }
 }

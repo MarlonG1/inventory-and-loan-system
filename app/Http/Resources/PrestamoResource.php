@@ -18,12 +18,13 @@ class PrestamoResource extends JsonResource
             'id' => $this->id,
             'userId' => $this->user_id,
             'aulaId' => $this->aula_id,
-            'asignatura' => $this->asignatura,
             'motivo' => $this->motivo,
             'estado' => $this->estado,
             'fechaPrestamo' => $this->fecha_prestamo,
             'horaInicio' => $this->hora_inicio,
             'horaFin' => $this->hora_fin,
+            'asignatura' => new AsignaturaResource($this->whenLoaded('asignatura')),
+            'carrera' => new CarreraResource($this->whenLoaded('carrera')),
             'user' => new UserResource($this->whenLoaded('user')),
             'equipos' => EquipoResource::collection($this->whenLoaded('equipos'))
         ];

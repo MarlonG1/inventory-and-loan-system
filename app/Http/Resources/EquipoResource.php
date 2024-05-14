@@ -23,6 +23,7 @@ class EquipoResource extends JsonResource
             'estado' => $this->estado,
             'unidad' => $this->unidad,
             'observaciones' => $this->observaciones,
+            'imagen' => $this->imagen,
             'licencias' => LicenciaResource::collection($this->whenLoaded('licencias'))
         ];
     }

@@ -12,13 +12,13 @@ return new class extends Migration {
     {
         Schema::create('equipos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('prestamo_id')->nullable()->constrained();
+            $table->foreignId('prestamo_id')->nullable()->constrained()->onDelete('set null');
             $table->string('marca');
             $table->string('modelo');
             $table->string('identificador');
             $table->string('estado')->default('Disponible');
-            $table->string('unidad');
             $table->string('observaciones')->nullable();
+            $table->string('imagen')->nullable();
             $table->timestamps();
         });
     }

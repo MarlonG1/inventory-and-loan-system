@@ -14,11 +14,11 @@ class RegistroUsuarioRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'departamentoId' => 'required',
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'phone' => 'required',
             'birthDate' => 'required',
-            'dui' => ['required', 'unique:users'],
             'carnet' => ['required', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
@@ -30,12 +30,11 @@ class RegistroUsuarioRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'departamentoId.required' => 'El campo departamento es requerido',
             'name.required' => 'El campo nombre es requerido',
             'lastname.required' => 'El campo apellido es requerido',
             'phone.required' => 'El campo teléfono es requerido',
             'birthDate.required' => 'El campo fecha de nacimiento es requerido',
-            'dui.required' => 'El campo DUI es requerido',
-            'dui.unique' => 'El DUI ya está registrado',
             'carnet.required' => 'El campo carnet es requerido',
             'carnet.unique' => 'El carnet ya está registrado',
             'email.required' => 'El campo correo electrónico es requerido',

@@ -22,7 +22,7 @@ class EquipoLicenciaFactory extends Factory
 
             'fecha_asignacion' => '2021-10-10',
             'estado' => $this->faker->randomElement(['Activo', 'Inactivo']),
-            'observaciones' => $this->faker->name(),
+            'observaciones' => $this->faker->sentence(5)(),
         ];
     }
 }

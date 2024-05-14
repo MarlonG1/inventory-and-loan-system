@@ -22,11 +22,13 @@ class PrestamoHistoricoSeeder extends Seeder
                 'prestamo_id' => $prestamo->id,
                 'aula_id' => $prestamo->aula_id,
                 'user_id' => $prestamo->user_id,
-                'asignatura' => $prestamo->asignatura,
+                'carrera_id' => $prestamo->carrera_id,
+                'asignatura_id' => $prestamo->asignatura_id,
                 'motivo' => $prestamo->motivo,
                 'fecha_prestamo' => $prestamo->fecha_prestamo,
                 'hora_inicio' => $prestamo->hora_inicio,
                 'hora_fin' => $prestamo->hora_fin,
+                'ultimate_state' => 'Creado',
             ]);
 
             $prestamoHistorico->save();

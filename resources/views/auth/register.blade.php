@@ -24,11 +24,21 @@
             <div class="form-group pb-2"><input class="form-control" required name="birthDate" type="date">
             </div>
         </div>
-        <div class="d-flex">
-            <div class="form-group pb-2 mr-4"><input class="form-control" required name="dui" type="text"
-                                                     placeholder="DUI">
+        <div class="d-flex col-xl-12 p-0">
+            <div class="form-group pb-2 mr-4 col-xl-6 px-0">
+                <select name="departamentoId" id="departamentoId"
+                        class="selectpicker input_textual form-control"
+                        data-live-search="true">
+                    <option value="" selected disabled>Departamento
+                    </option>
+                    @foreach($departamentos as $departamento)
+                        <option
+                            value="{{$departamento->id}}">{{$departamento->nombre}}
+                        </option>
+                    @endforeach
+                </select>
             </div>
-            <div class="form-group pb-2"><input class="form-control" required name="carnet" type="text"
+            <div class="form-group pb-2 col-xl-6 px-0"><input class="form-control" required name="carnet" type="text"
                                                 placeholder="Carnet">
             </div>
         </div>
