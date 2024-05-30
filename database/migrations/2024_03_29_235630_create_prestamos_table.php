@@ -12,11 +12,10 @@ return new class extends Migration {
     {
         Schema::create('prestamos', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('aula_id')->nullable()->constrained();
-            $table->foreignId('carrera_id')->nullable()->constrained();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->foreignId('asignatura_id')->nullable()->constrained();
-            $table->text('motivo');
+            $table->text('motivo')->nullable();
             $table->string('estado')->nullable()->default('Activo');
             $table->date('fecha_prestamo');
             $table->time('hora_inicio');

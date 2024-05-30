@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('asignaturas', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('carrera_id')->nullable()->constrained('carreras');
             $table->string('nombre');
             $table->string('codigo');
         });

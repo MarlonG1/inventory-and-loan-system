@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Http\Interfaces\ISearch;
 
-class Prestamo extends Model
+class Prestamo extends Model implements ISearch
 {
     use HasFactory;
     use SearchTrait;
@@ -17,7 +18,6 @@ class Prestamo extends Model
     protected $fillable = [
         'user_id',
         'aula_id',
-        'carrera_id',
         'asignatura_id',
         'motivo',
         'estado',
@@ -29,33 +29,33 @@ class Prestamo extends Model
     protected $model = self::class;
     protected $relations = ['user', 'equipos', 'asignatura'];
 
-    //me quede en esta wea que no esta funcionando xd
-//    protected static function booted()
-//    {
-//        static::saved(function ($prestamo) {
-//           $prestamo->load('equipos');
-//            $prestamoHistorico = new PrestamoHistorico([
-//                'prestamo_id' => $prestamo->id,
-//                'user_id' => $prestamo->user_id,
-//                'asignatura' => $prestamo->asignatura,
-//                'motivo' => $prestamo->motivo,
-//                'fecha_prestamo' => $prestamo->fecha_prestamo,
-//                'hora_inicio' => $prestamo->hora_inicio,
-//                'hora_fin' => $prestamo->hora_fin,
-//            ]);
-//            $prestamoHistorico->save();
-//
-//            $equiposConDatos = [];
-//            foreach ($prestamo->equipos as $equipo) {
-//                $equiposConDatos[$equipo->id] = [
-//                    'estado' => $equipo->estado,
-//                    'identificador' => $equipo->identificador,
-//                ];
-//            }
-//
-//            $prestamoHistorico->equipos()->attach($equiposConDatos);
-//        });
-//    }
+    //Atributos usados para la busqueda
+    protected array $tables = ['prestamos', 'users', 'equipos', 'asignaturas'];
+    protected array $fields = [
+        'prestamos' => ['estado'],
+        'users' => ['name', 'lastname'],
+        'equipos' => [],
+        'asignaturas' => ['nombre'],
+    ];
+
+    protected array $joins = [
+        [
+            'table' => 'users',
+            'firstKey' => 'prestamos.user_id',
+            'secondKey' => 'users.id',
+        ],
+        [
+            'table' => 'equipos',
+            'firstKey' => 'prestamos.id',
+            'secondKey' => 'equipos.prestamo_id',
+        ],
+        [
+            'table' => 'asignaturas',
+            'firstKey' => 'prestamos.asignatura_id',
+            'secondKey' => 'asignaturas.id',
+        ],
+    ];
+    //Fin atributos usados para la busqueda
 
     public function user() : BelongsTo
     {
@@ -72,35 +72,35 @@ class Prestamo extends Model
         return $this->hasMany(Equipo::class);
     }
 
-    public function carrera() : BelongsTo
-    {
-        return $this->belongsTo(Carrera::class);
-    }
-
     public function asignatura() : BelongsTo
     {
         return $this->belongsTo(Asignatura::class);
     }
 
-    //Metodos de objeto
+    //Metodos de interfaz ISearch
 
     public function getModel()
     {
         return app($this->model);
     }
 
-    public function getRelations()
+    public function getRelations(): array
     {
         return property_exists($this, 'relations') ? $this->relations : [];
     }
 
-    //Me quede aqui
-//    public function configure()
-//    {
-//        return $this->afterCreating(function (Prestamo $prestamo) {
-//            // Asociar equipos al préstamo
-//            $equipos = Equipo::factory()->count(3)->create();
-//            $prestamo->equipos()->saveMany($equipos);
-//        });
-//    }
+    public function getTables(): array
+    {
+        return $this->tables;
+    }
+
+    public function getFields(): array
+    {
+        return $this->fields;
+    }
+
+    public function getJoins(): array
+    {
+        return $this->joins;
+    }
 }

@@ -50,6 +50,7 @@
                             </form>
                         </div>
                     </div>
+                    <a href="{{route('pos')}}"><i class="fa-solid fa-tv"></i></a>
                 @else
                     <a href="{{route('login')}}"><i class="fa-solid fa-user fa-xl ampliar mr-4"></i></a>
                 @endauth

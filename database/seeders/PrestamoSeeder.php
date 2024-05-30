@@ -18,7 +18,6 @@ class PrestamoSeeder extends Seeder
     public function run(): void
     {
         $asignaturas = Asignatura::all();
-        $carreras = Carrera::all();
         $aulas = Aula::all();
 
         Prestamo::factory()
@@ -26,10 +25,9 @@ class PrestamoSeeder extends Seeder
             ->for(User::factory())
             ->hasEquipos(3)
             ->create()
-            ->each(function ($prestamo) use ($aulas, $asignaturas, $carreras) {
+            ->each(function ($prestamo) use ($aulas, $asignaturas) {
                 $prestamo->aula_id = $aulas->random()->id;
                 $prestamo->asignatura_id = $asignaturas->random()->id;
-                $prestamo->carrera_id = $carreras->random()->id;
                 $prestamo->save();
             });
 
@@ -38,10 +36,9 @@ class PrestamoSeeder extends Seeder
             ->for(User::factory())
             ->hasEquipos(2)
             ->create()
-            ->each(function ($prestamo) use ($aulas, $asignaturas, $carreras) {
+            ->each(function ($prestamo) use ($aulas, $asignaturas) {
                 $prestamo->aula_id = $aulas->random()->id;
                 $prestamo->asignatura_id = $asignaturas->random()->id;
-                $prestamo->carrera_id = $carreras->random()->id;
                 $prestamo->save();
             });
 
@@ -50,10 +47,9 @@ class PrestamoSeeder extends Seeder
             ->for(User::factory())
             ->hasEquipos(4)
             ->create()
-            ->each(function ($prestamo) use ($aulas, $asignaturas, $carreras) {
+            ->each(function ($prestamo) use ($aulas, $asignaturas) {
                 $prestamo->aula_id = $aulas->random()->id;
                 $prestamo->asignatura_id = $asignaturas->random()->id;
-                $prestamo->carrera_id = $carreras->random()->id;
                 $prestamo->save();
             });
     }

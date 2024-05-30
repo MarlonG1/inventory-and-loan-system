@@ -12,8 +12,14 @@ class Carrera extends Model
     protected $fillable = ['nombre', 'codigo'];
     public $timestamps = false;
 
-    public function prestamo ()
+
+    public function user()
     {
-        return $this->hasMany(Prestamo::class);
+        return $this->hasMany(User::class);
+    }
+
+    public function asignatura()
+    {
+        return $this->hasMany(Asignatura::class);
     }
 }

@@ -30,7 +30,6 @@ class StorePrestamoRequest extends FormRequest
             'aulaId' => ['required'],
             'carreraId' => ['required'],
             'asignaturaId' => ['required'],
-            'motivo' => ['required'],
             'estado' => ['required', Rule::in(['Activo', 'Pendiente', 'Finalizado'])],
             'fechaPrestamo' => ['required'],
             'horaInicio' => ['required'],

@@ -22,7 +22,6 @@ class PrestamoHistoricoSeeder extends Seeder
                 'prestamo_id' => $prestamo->id,
                 'aula_id' => $prestamo->aula_id,
                 'user_id' => $prestamo->user_id,
-                'carrera_id' => $prestamo->carrera_id,
                 'asignatura_id' => $prestamo->asignatura_id,
                 'motivo' => $prestamo->motivo,
                 'fecha_prestamo' => $prestamo->fecha_prestamo,

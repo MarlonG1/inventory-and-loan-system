@@ -1923,10 +1923,24 @@ a.btn-float:hover {
 
 /*POS*/
 
+::-webkit-scrollbar{
+    width: 5px;
+}
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+::-webkit-scrollbar-thumb {
+    background: #666;
+}
+::-webkit-scrollbar-thumb:hover{
+    background: #555;
+}
+
 .pos-container a,
 a:hover {
     text-decoration: none;
 }
+
 
 .pos-container select:focus {
     outline: none;
@@ -1984,7 +1998,7 @@ a:hover {
     display: flex;
     flex: 1;
     max-height: 700px;
-    overflow-y: auto;
+    overflow-y: hidden;
 }
 .pos-container .sellables-container .sellables {
     display: flex;
@@ -2009,11 +2023,10 @@ a:hover {
     background: #c8cfd8;
 }
 .pos-container .sellables-container .sellables .categories .active {
-    background: #bac2cd;
-    color: #424a54;
+    background: var(--primario-claro);
 }
 .pos-container .sellables-container .sellables .categories .active:hover {
-    background: #abb5c2;
+    background: var(--primario);
 }
 .pos-container .sellables-container .sellables .item-group-wrapper {
     overflow-y: scroll;
@@ -2024,18 +2037,19 @@ a:hover {
     flex-wrap: wrap;
 }
 .pos-container .sellables-container .sellables .item-group-wrapper .item-group .item {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 195px;
     margin: 0.5em 0.5em;
     border-radius: 5px;
-    background: #979696;
+    background: var(--primario-claro);
     color: #fff;
     position: relative;
 }
 
-.badge {
+.badge-equipo {
     position: absolute;
-    top: 85%;
+    font-size: 14px;
+    top: 75%;
     left: 50%;
     transform: translateX(-50%);
     color: white;
@@ -2043,9 +2057,22 @@ a:hover {
     border-radius: 5px;
 }
 
-.pos-container .sellables-container .sellables .item-group-wrapper .item-group .item:hover {
-    background: #636363;
+.equipo {
+    border-radius: 5px;
 }
+
+.pos-container .sellables-container .sellables .item-group-wrapper .item-group .selected {
+    background: var(--secundario-oscuro);
+}
+
+.pos-container .sellables-container .sellables .item-group-wrapper .item-group .selected:hover {
+    background: var(--secundario-claro) !important;
+}
+
+.pos-container .sellables-container .sellables .item-group-wrapper .item-group .item:hover {
+    background: var(--primario);
+}
+
 .pos-container .sellables-container .register-wrapper {
     display: flex;
     flex-direction: column;
@@ -2102,4 +2129,10 @@ a:hover {
     background: #3b8e71;
 }
 
+/*Badges*/
+
+.badge-secundario {
+    background: var(--secundario-oscuro);
+    color: white;
+}
 

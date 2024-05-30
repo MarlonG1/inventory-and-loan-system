@@ -38,15 +38,20 @@
                                         <a href="/solicitud-equipo" class="btn btn-default ampliar"
                                            title="Agregar"><i class="fa-solid fa-plus"></i></a>
                                     </div>
-                                    <div class="d-flex justify-content-end pt-3">
-                                        <p class="text-white my-auto pt-1 pr-2">Entradas por pagina: </p>
-                                        <div class="dropdown">
-                                            <select class="custom-select" id="entradasPorPagina">
-                                                <option value="10">10</option>
-                                                <option value="25">25</option>
-                                                <option value="50">50</option>
-                                                <option value="100">100</option>
-                                            </select>
+                                    <div>
+                                        <p class="text-white pt-4 pr-2 m-0" id="searchInfo" style="display: none;"></p>
+                                    </div>
+                                    <div id="entriesPerPageContainer">
+                                        <div class="d-flex justify-content-end pt-3">
+                                            <p class="text-white my-auto pt-1 pr-2">Entradas por pagina: </p>
+                                            <div class="dropdown">
+                                                <select class="custom-select" id="entradasPorPagina">
+                                                    <option value="10">10</option>
+                                                    <option value="25">25</option>
+                                                    <option value="50">50</option>
+                                                    <option value="100">100</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -232,7 +237,7 @@
                     </div>
                     <div class="modal-body" id="cambiarEstadoBody">
                         <div class="form-group" style="display:none;">
-                            <input type="text" name="id" class="form-control text-center"/>
+                            <input type="text" name="id" class="form-control text-center" style="display: none;"/>
                         </div>
                         <div class="form-group">
                             <small class="form-text text-muted">Estado</small>
@@ -264,9 +269,7 @@
                         </button>
                     </div>
                     <div class="modal-body" id="motivoBody">
-                        <div class="form-group col-sm-2 mx-auto" style="display:none;">
-                            <input type="text" name="id" class="form-control text-center"/>
-                        </div>
+                        <input type="text" name="id" class="form-control text-center" style="display: none;"/>
                         <textarea name="motivo" id="motivo"></textarea>
                     </div>
                     <div class="modal-footer">
@@ -333,8 +336,9 @@
                                     <div class="row formulario-form">
                                         <div class="col-12">
                                             <div class="d-flex">
-                                                <input type="number" name="id" id="id" style="display: none">
                                                 <div class="form-group col-6 pl-0">
+                                                    <input type="text" name="id" class="form-control text-center"
+                                                           style="display: none;"/>
                                                     <small class="form-text text-muted">Nombre del solicitante</small>
                                                     <select name="userId" id="userId"
                                                             class="selectpicker input_textual form-control"
@@ -350,7 +354,7 @@
                                                 <div class="form-group col-6 pr-0">
                                                     <small class="form-text text-muted">Agregar más equipos</small>
                                                     <div class=" d-flex">
-                                                        <input required autocomplete="off" type="number" name="cantidad"
+                                                        <input autocomplete="off" type="number"
                                                                id="cantidad" class="form-control"
                                                                placeholder="Agregar más equipos"
                                                                value=""/>
@@ -463,7 +467,7 @@
                     ${camposDobles ? '<div class="d-flex">' : ''}
                         <div class="form-group ${colClass}">
                             <small class="form-text text-muted">Nuevo equipo #${i}</small>
-                            <select name="nuevoEquipo${i}" id="nuevoEquipo${i}" class=" input_textual form-control" data-live-search="true">
+                            <select id="nuevoEquipo${i}" class="equipo input_textual form-control" data-live-search="true">
                                 <option value="" selected disabled>Seleccione el equipo</option>
                                 @foreach($equiposDisponibles as $equipo)
                     <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
@@ -498,7 +502,7 @@ ${!camposDobles ? '</div>' : ''}`
                     ${camposDobles ? '<div class="d-flex justify-content-center">' : ''}
                         <div class="form-group ${colClass}">
                             <small class="form-text text-muted">Equipo #${i}</small>
-                            <select name="equipo${i}" id="equipo${i}" class=" input_textual form-control disable" data-live-search="true">
+                            <select id="equipo${i}" class="input_textual form-control disable" data-live-search="true">
                                 <option value="" selected disabled>Seleccione el equipo</option>
                                 @foreach($equiposOcupados as $equipo)
                     <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>

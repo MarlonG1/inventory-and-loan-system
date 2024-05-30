@@ -15,11 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('google_id')->nullable();
             $table->foreignId('departamento_id')->nullable()->constrained('departamentos')->onDelete('no action');
+            $table->foreignId('carrera_id')->nullable()->constrained('carreras')->onDelete('no action');
             $table->string('name');
             $table->string('lastname');
             $table->string('email')->unique();
             $table->string('password')->nullable();
-            $table->string('type');
+            $table->string('type')->default('Estudiante');
             $table->string('phone')->nullable();
             $table->string('carnet')->nullable()->unique();
             $table->date('birth_date')->nullable();

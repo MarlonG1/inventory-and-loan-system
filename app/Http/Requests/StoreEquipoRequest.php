@@ -28,7 +28,6 @@ class StoreEquipoRequest extends FormRequest
             'modelo' => ['required'],
             'identificador' => ['required'],
             'estado' => ['required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
-            'unidad' => ['required'],
             'observaciones' => ['required'],
         ];
     }

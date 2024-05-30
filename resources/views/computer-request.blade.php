@@ -59,7 +59,7 @@
                                                     <div class="form-group col-sm-12">
                                                         <small class="form-text text-muted">Equipo</small>
                                                         <select name="equipo1" id="equipo1"
-                                                                class="selectpicker input_textual form-control"
+                                                                class="equipo selectpicker input_textual form-control"
                                                                 data-live-search="true">
                                                             <option value="" selected disabled>Seleccione el equipo
                                                             </option>
@@ -175,7 +175,7 @@
                     ${camposDobles ? '<div class="d-flex">' : ''}
                         <div class="form-group ${colClass}">
                             <small class="form-text text-muted">Equipo #${i}</small>
-                            <select name="equipo${i}" id="equipo${i}" class=" input_textual form-control" data-live-search="true">
+                            <select name="equipo${i}" id="equipo${i}" class="equipo input_textual form-control" data-live-search="true">
                                 <option value="" selected disabled>Seleccione el equipo</option>
                                 @foreach($equipos as $equipo)
                     <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>

@@ -1,19 +1,14 @@
 let currentPage = 0;
 
-const Toast = Swal.mixin({
-    toast: true,
-    position: "top-end",
-    showConfirmButton: false,
-    timer: 3000,
-    timerProgressBar: true,
-    didOpen: (toast) => {
-        toast.onmouseenter = Swal.stopTimer;
-        toast.onmouseleave = Swal.resumeTimer;
-    }
-});
-
 document.addEventListener('DOMContentLoaded', async function () {
-    await getPrestamosToAPI(1);
+    await getPrestamosFromAPI(1);
+
+    document.getElementById('entradasPorPagina').addEventListener('change', async function () {
+        const entriesPerPage = this.value;
+        localStorage.setItem('entriesPerPage', entriesPerPage);
+        await getPrestamosFromAPI(1);
+    });
+
 
     try {
         const elementoDePaginacion = document.querySelector(".pagination");
@@ -23,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 event.preventDefault();
 
                 const nuevaPagina = parseInt(event.target.getAttribute("data-page"));
-                await getPrestamosToAPI(nuevaPagina);
+                await getPrestamosFromAPI(nuevaPagina);
                 currentPage = nuevaPagina;
             }
         });
@@ -36,48 +31,55 @@ document.addEventListener('DOMContentLoaded', async function () {
 
         inputBusqueda.addEventListener("input", async function () {
             const searchTerm = inputBusqueda.value.trim();
+            const searchInfo = document.getElementById('searchInfo');
+            const entriesPerPageContainer = document.getElementById('entriesPerPageContainer');
 
             if (inputBusqueda.value.length > 0) {
+                entriesPerPageContainer.style.display='none';
+                searchInfo.style.display = '';
                 document.getElementById("limpiarBusqueda").style.display = "";
             } else {
+                entriesPerPageContainer.style.display='';
+                searchInfo.style.display = 'none';
                 document.getElementById("limpiarBusqueda").style.display = "none"
             }
 
-            await getPrestamosToAPI(currentPage, searchTerm);
+            await getPrestamosFromAPI(currentPage, searchTerm);
         });
 
-        await getPrestamosToAPI(1);
+        await getPrestamosFromAPI(1);
     } catch (error) {
         console.error("Error al cargar datos:", error);
     }
 });
 
-async function getPrestamosToAPI(page, searchTerm = '') {
+async function getPrestamosFromAPI(page, searchTerm = '') {
+    const entriesPerPage = document.getElementById('entradasPorPagina').value = localStorage.getItem('entriesPerPage') === null ? 5 : localStorage.getItem('entriesPerPage');
 
     if (page === null) {
         return;
     }
 
-    const response = await fetch(`/api/v1/prestamos?include=carrera,asignatura,user,equipos&page=${page}&searchTerm=${searchTerm}`, {
-        method: 'GET',
-        headers: {
-            'Credentials': 'include',
-        }
-    })
+    const filters = `include=carrera,asignatura,user,equipos&page=${page}&searchTerm=${searchTerm}&entriesPerPage=${entriesPerPage}`;
+    try {
+        const response = await PrestamoAPI.getPrestamos(filters);
+        const entriesPerPageContainer = document.getElementById('entriesPerPageContainer');
+        const searchInfo = document.getElementById('searchInfo');
 
-    if (response.ok) {
-        const apiResponse = await response.json();
 
-        if (searchTerm === ''){
-            document.querySelector('.pagination').innerHTML = setPagination(apiResponse);
+        if (searchTerm === '') {
+            document.querySelector('.pagination').innerHTML = setPagination(response);
+            setEntriesPerPage(response.meta.total);
+
         } else {
             document.querySelector('.pagination').innerHTML = "Se muestran todos los resultados en una sola página."
-            document.getElementById("indiceDePaginas").innerHTML = "Total de resultados: " + apiResponse.count;
+            document.getElementById("indiceDePaginas").innerHTML = "Total de resultados: " + response.count;
+            searchInfo.innerHTML = `Resultados de la búsqueda: <b>${response.count}</b>`;
         }
 
-        setTablePrestamos(apiResponse);
-    } else {
-        console.log('Ocurrio un error en la peticion');
+        setTablePrestamos(response);
+    } catch (error) {
+        console.error("Error al cargar datos:", error);
     }
 }
 
@@ -88,6 +90,29 @@ function setTablePrestamos(datadb) {
     });
 
     setHeaderInfo(datadb.otherInformation);
+}
+
+function setEntriesPerPage(total) {
+    const entriesPerPageElement = document.getElementById('entradasPorPagina');
+    entriesPerPageElement.innerHTML = '';
+    const options = [5, 10, 25, 50, 100];
+
+    if (total === 0) {
+        entriesPerPageElement.innerHTML = '<option value="0">0</option>';
+        return;
+    }
+
+    options.forEach(option => {
+        if (option <= total) {
+            entriesPerPageElement.innerHTML += `<option value="${option}">${option}</option>`;
+        }
+    });
+
+    const storageValue = localStorage.getItem("entriesPerPage");
+
+    if (storageValue && options.includes(parseInt(storageValue))) {
+        entriesPerPageElement.value = storageValue;
+    }
 }
 
 function setHeaderInfo(totales) {
@@ -149,23 +174,14 @@ function setPagination(data) {
 
     entriesInfo.innerHTML = `Mostrando <b>${entriesPerPage}</b> entradas de <b>${totalPages}</b> salidas`;
 
-
-    if (endPage > 5) {
-        paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="1">&lt;&lt;</a></li>`;
-        paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${current_page !== 1 ? current_page - 1 : 1}">&lt;</a></li>`;
-        for (let i = startPage; i <= endPage; i++) {
-            let label = i;
-            paginacionHTML += `<li class="page-item ${i === current_page ? "active" : ""}"><a class="page-link" href="#" data-page="${label}">${label}</a></li>`;
-        }
-        paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${current_page !== last_page ? current_page + 1 : last_page}">&gt;</a></li>`;
-        paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${last_page}">&gt;&gt;</a></li>`;
-    } else {
-        for (let i = startPage; i <= endPage; i++) {
-            let label = i;
-            paginacionHTML += `<li class="page-item ${i === current_page ? "active" : ""}"><a class="page-link" href="#" data-page="${label}">${label}</a></li>`;
-        }
+    paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="1">&lt;&lt;</a></li>`;
+    paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${current_page !== 1 ? current_page - 1 : 1}">&lt;</a></li>`;
+    for (let i = startPage; i <= endPage; i++) {
+        let label = i;
+        paginacionHTML += `<li class="page-item ${i === current_page ? "active" : ""}"><a class="page-link" href="#" data-page="${label}">${label}</a></li>`;
     }
-
+    paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${current_page !== last_page ? current_page + 1 : last_page}">&gt;</a></li>`;
+    paginacionHTML += `<li class="page-item"><a class="page-link" href="#" data-page="${last_page}">&gt;&gt;</a></li>`;
 
     return paginacionHTML;
 }
@@ -188,8 +204,6 @@ function setModalElements(modalID, elements, data) {
         form.elements[element].value = data[index];
     });
     $(modalID).modal("show");
-
-    addModalSubmitEvent(modalID.slice(1), modalID.slice(1) + "Form", data[0]);
 }
 
 function showComputersModal(prestamo) {
@@ -223,76 +237,58 @@ function showComputersModal(prestamo) {
     });
 }
 
-function addModalSubmitEvent(IDmodal, IDformulario, id) {
-    document
-        .getElementById(IDformulario)
-        .addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            try {
-                const formData = new FormData(this);
-                $(`#${IDmodal}`).modal("hide");
-
-                let setMethod;
-
-                switch (IDmodal) {
-                    case 'edit' :
-                        setMethod = 'PUT';
-                        formData.set('motivo', tinymce.get('motivo-edit').getContent());
-                        break
-                    case 'delete' :
-                        setMethod = 'DELETE';
-                        break
-                    default :
-                        setMethod = 'PATCH';
-                }
-
-                const response = await fetch(`/api/v1/prestamos/${id}`, {
-                    method: setMethod,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json',
-                        'Credentials': 'include',
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData)),
-                });
-
-                const apiResponse = await response.json();
-
-                if (IDmodal === 'edit') {
-                    await assingEquiposToPrestamo(apiResponse.id)
-                }
-
-                await getPrestamosToAPI(currentPage).then(() => {
-                    showAlert(apiResponse)
-                });
-
-            } catch (error) {
-                console.error("Error inesperado:", error);
-            }
-        });
-}
-
 function showDeleteModal(id) {
     const elements = ["id"];
     setModalElements('#delete', elements, [id]);
+
+    document.getElementById('deleteForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $(`#delete`).modal("hide");
+        Alerts.showToastAlert(await PrestamoAPI.deletePrestamo(id));
+        await getPrestamosFromAPI(currentPage);
+    });
 }
 
 function showChangeStatusModal(id) {
     const elements = ["id"];
     setModalElements('#changeStatus', elements, [id]);
+
+    document.getElementById('changeStatusForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        $(`#changeStatus`).modal("hide");
+        const id = formData.get('id');
+
+        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
+        await getPrestamosFromAPI(currentPage);
+    });
 }
 
 function showReasonModal(id, motivo) {
-    const elements = ["id"];
+    const elements = ['id'];
     tinymce.get("motivo").setContent(motivo);
-    setModalElements("#viewReason", elements, [id]);
+
+    setModalElements('#viewReason', elements, [id]);
+
+    document.getElementById('viewReasonForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        $(`#viewReason`).modal("hide");
+
+        const formData = new FormData(this);
+        formData.set('motivo', tinymce.get('motivo').getContent());
+
+        console.log(formData.get('motivo') + " " + formData.get('id'));
+        const id = formData.get('id');
+
+        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
+        await getPrestamosFromAPI(currentPage);
+    });
 }
 
 function showEditModal(prestamo) {
     const elements = ['id', 'fechaPrestamo', 'horaInicio', 'horaFin'];
     tinymce.get("motivo-edit").setContent(prestamo.motivo);
-    const name = prestamo.user.name + ' ' + prestamo.user.lastname;
     const ids = prestamo.equipos.map(equipo => equipo.id);
 
     document.getElementById('nuevo-equipo-container').innerHTML = '';
@@ -304,6 +300,19 @@ function showEditModal(prestamo) {
     $('#asignaturaId').selectpicker('val', prestamo.asignatura_id + "");
     setModalElements("#edit", elements, [prestamo.id, prestamo.fecha_prestamo, prestamo.hora_inicio, prestamo.hora_fin]);
     setEquiposToEdit(ids);
+
+    document.getElementById('editForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        $(`#edit`).modal("hide");
+
+        const formData = new FormData(this);
+        const id = formData.get('id');
+        formData.set('motivo', tinymce.get('motivo-edit').getContent());
+
+        await linkEquiposToPrestamo(prestamo.id);
+        Alerts.showToastAlert(await PrestamoAPI.putPrestamo(id, formData));
+        await getPrestamosFromAPI(currentPage);
+    });
 }
 
 tinymce.init({
@@ -313,68 +322,12 @@ tinymce.init({
     height: 250
 });
 
-async function deleteEquipoToPrestamo(id) {
+async function unlinkEquipo(id) {
     let formData = new FormData();
     formData.append('prestamo_id', null);
     formData.append('estado', 'Disponible');
 
-    const response = await fetch(`/api/v1/equipos/${id}`, {
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json',
-            'Credentials': 'include',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    });
-
-    return await response.json();
-}
-
-async function assingEquiposToPrestamo(idPrestamo) {
-    const equipoCount = localStorage.getItem('equipos') === null ? 1 : localStorage.getItem('equipos');
-    console.log('equipos ' + equipoCount);
-    for (let i = 1; i <= equipoCount; i++) {
-        let idEquipo = document.getElementById(`nuevoEquipo${i}`).value;
-        console.log(idEquipo)
-        await setEquipoToPrestamo(idEquipo, idPrestamo)
-    }
-}
-
-async function setEquipoToPrestamo(idEquipo, idPrestamo) {
-    let formData = new FormData();
-    formData.set('prestamoId', idPrestamo);
-    formData.set('estado', 'Ocupado');
-
-    // console.log('PARA ' + idPrestamo + ' EL EQUIPO ' + idEquipo + ' CON INFO DE ' + JSON.stringify(Object.fromEntries(formData)));
-
-
-    const response = await fetch(`/api/v1/equipos/${idEquipo}`, {
-        method: 'PATCH',
-        headers: {
-            'Accept': 'application/json',
-            'Content-Type': "application/json",
-            'Credentials': 'include',
-        },
-        body: JSON.stringify(Object.fromEntries(formData)),
-    });
-
-
-    const apiResponse = await response.json();
-    // console.log(apiResponse);
-
-
-    if (!response.ok) {
-        console.log('error al setear el equipo al equipo')
-    }
-}
-
-function showAlert(data) {
-    Toast.fire({
-        icon: data.icon,
-        title: data.title,
-        text: data.text,
-    });
+    return await EquipoAPI.patchEquipo(id, formData);
 }
 
 function showDeleteAlert(id) {
@@ -388,16 +341,35 @@ function showDeleteAlert(id) {
         confirmButtonText: 'Sí, borrarlo!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            const response = await deleteEquipoToPrestamo(id);
+            const response = await unlinkEquipo(id);
             $(`#edit`).modal("hide");
-            showAlert(response);
-            await getPrestamosToAPI(currentPage);
+            Alerts.showToastAlert(response);
+            await getPrestamosFromAPI(currentPage);
         }
     });
 }
 
-async function cleanSearchInput() {
-    document.querySelector(".busqueda").value = "";
-    document.getElementById("limpiarBusqueda").style.display = "none";
-    await getPrestamosToAPI(1);
+async function linkEquiposToPrestamo(idPrestamo) {
+    let formData = new FormData();
+    formData.set('prestamoId', idPrestamo);
+    formData.set('estado', 'Ocupado');
+
+    const equipos = document.querySelectorAll('select.equipo');
+
+    console.log(equipos)
+
+    equipos.forEach(equipo => {
+        EquipoAPI.patchEquipo(equipo.value, formData);
+    });
 }
+
+async function cleanSearchInput() {
+
+    document.querySelector(".busqueda").value = "";
+    document.querySelector("#entriesPerPageContainer").style.display = "";
+    document.querySelector('#searchInfo').style.display = 'none';
+    document.getElementById("limpiarBusqueda").style.display = "none";
+    await getPrestamosFromAPI(1);
+}
+
+

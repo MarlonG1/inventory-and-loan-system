@@ -29,7 +29,6 @@ class BulkStoreEquipoRequest extends FormRequest
             '*.modelo' => ['required', 'string'],
             '*.identificador' => ['required', 'string'],
             '*.estado' => ['required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
-            '*.unidad' => ['required', 'integer'],
             '*.observaciones' => ['nullable', 'string'],
         ];
     }

@@ -59,7 +59,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Reportes
     Route::get('/pdf/{prestamoId}', [VistaController::class, 'viewPdf'])->name('pdf');
-    Route::get('/send/informationEmail/{prestamoId}', [SendEmailController::class, 'send'])->name('sendInformationEmail');
 
     //Administracion
     Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');

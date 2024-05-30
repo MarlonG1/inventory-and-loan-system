@@ -17,7 +17,6 @@ class PrestamoFactory extends Factory
     public function definition(): array
     {
         return [
-
             'motivo' => $this->faker->paragraph(),
             'estado' => $this->faker->randomElement(['Activo', 'Pendiente', 'Finalizado']),
             'fecha_prestamo' => $this->faker->date(),

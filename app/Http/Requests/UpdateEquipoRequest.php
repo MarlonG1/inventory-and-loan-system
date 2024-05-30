@@ -30,7 +30,6 @@ class UpdateEquipoRequest extends FormRequest
                 'modelo' => ['required'],
                 'identificador' => ['required'],
                 'estado' => ['required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
-                'unidad' => ['required'],
                 'observaciones' => ['required'],
             ];
         } else {
@@ -40,7 +39,6 @@ class UpdateEquipoRequest extends FormRequest
                 'modelo' => ['sometimes', 'required'],
                 'identificador' => ['sometimes', 'required'],
                 'estado' => ['sometimes', 'required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
-                'unidad' => ['sometimes', 'required'],
                 'observaciones' => ['sometimes', 'required'],
             ];
         }

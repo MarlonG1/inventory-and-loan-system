@@ -3,13 +3,11 @@
 
 @section('content')
     <div class="pos-container container my-5">
-        <div class="sellables-container">
+        <div class="sellables-container mb-3">
             <div class="sellables">
-                <div class="d-flex justify-content-center align-items-center">
-                    <p class="m-0">Categorias: </p>
-                    <div class="d-flex categories justify-content-center">
-                        <select id="categories-select" class="selectpicker">
-                        </select>
+                <div class="mx-4">
+                    <div class="d-flex justify-content-center categories">
+                        <a href="#" class="btn btn-primario text-white category-template mr-2" style="display: none">Marca</a>
                     </div>
                 </div>
 
@@ -17,9 +15,9 @@
                 <div class="item-group-wrapper">
                     <div class="item-group d-flex justify-content-center equipos">
                         <a style="display: none" href="#" class="item px-2 pt-2 equipo-template">
-                            <span class="badge">Informacion</span>
-                            <img src=""
-                                 alt="" width="100%" height="85%">
+                            <span class="badge-equipo text-center ">Informacion</span>
+                            <img class="equipo" src=""
+                                 alt="Imagen" width="100%" height="75%">
                         </a>
                     </div>
                 </div>
@@ -27,9 +25,31 @@
 
             <div class="register-wrapper">
                 <div class="register">
-                    <div class="products my-auto" style="width: 100%">
-                        <h4 class="text-center py-2">Formulario de prestamo</h4>
-                        <div class="col-sm-12 pt-4 px-3 ">
+                    <div class="products my-auto pt-3 pb-4" style="width: 100%">
+                        <div class="col-sm-12 pt-1 px-3 ">
+                            <small class="form-text text-muted pb-1">Equipos seleccionados</small>
+                            <div class="mx-auto pb-3" style="height: 130px; overflow-y: auto">
+                                <table class="tabla-reporte" width="100%" style="border: 0">
+                                    <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="text-center">Equipo</th>
+                                        <th><i class="fa-solid fa-x"></i></th>
+                                    </tr>
+                                    </thead>
+                                    <tbody class="report-tbody">
+                                    <tr class="row-template" style="display: none;">
+                                        <td class="count"></td>
+                                        <td class="equipo text-center"></td>
+                                        <td class="action"></td>
+                                    </tr>
+                                    <tr class="no-results" style="display: none;">
+                                        <td colspan="3" class="text-center">No hay equipos asignados...</td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <form id="prestamoForm" action="">
                             <div class="form-group">
                                 <small class="form-text text-muted">Nombre del solicitante</small>
                                 <select name="userId" id="userId"
@@ -98,7 +118,7 @@
                                            class="form-control" placeholder="Ingrese la hora de entrega" value=""/>
                                 </div>
                             </div>
-                            <div class="pay-button pt-4">
+                            <div class="pay-button pt-2">
                                 <input id="enviarForm" required type="submit"
                                        class="btn btn-block btn-primario-claro ampliar text-white"
                                        value="Realizar prestamo"/>
@@ -108,6 +128,30 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="delete" tabindex="-1" role="dialog" aria-labelledby="eliminarTitle"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title text-center" id="eliminarTitle">Eliminar</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="eliminarBody">
+                        <div class="form-group" style="display:none;">
+                            <input type="text" id="id" class="form-control text-center"/>
+                        </div>
+                        <p class="text-center">¿Está seguro que desea eliminarlo?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-success">Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         @endsection
         @section('scripts')
             <script>const equiposMap = @json($cantidadPorMarca);</script>

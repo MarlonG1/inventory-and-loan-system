@@ -11,14 +11,14 @@ trait SearchTrait
      * Realiza una búsqueda en las tablas y campos especificados.
      *
      * @param string $searchTerm El término de búsqueda.
-     * @param array $tables Las tablas donde buscar.
-     * @param array $fields Los campos donde buscar, organizados por tabla.
-     * @param array $joins Los joins necesarios para relacionar las tablas.
      * @return AnonymousResourceCollection
      */
-    protected function searchQuery($searchTerm, $tables, $fields, $joins = [])
+    protected function searchQuery(string $searchTerm)
     {
         $model = $this->getModel();
+        $tables = $this->getTables();
+        $fields = $this->getFields();
+        $joins = $this->getJoins();
         $relations = $this->getRelations();
         $query = DB::table($tables[0]);
 

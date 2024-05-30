@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Filters\ApiSearchTrait;
 use App\Http\Resources\Collection;
 use App\Http\Resources\PrestamoResource;
 use App\Http\Traits\SearchTrait;
@@ -29,6 +28,7 @@ class PrestamoController extends Controller
         $searchTerm = $request->query('searchTerm');
         $include = $request->query('include', '');
         $includeAll = $request->query('includeAll');
+        $entriesPerPage = $request->query('entriesPerPage');
         $prestamos = Prestamo::where($queryItems);
 
         $prestamosTotales = [
@@ -41,32 +41,9 @@ class PrestamoController extends Controller
             $prestamos = $prestamos->orderBy('fecha_prestamo', 'desc');
             return new Collection($prestamos->get(), $prestamosTotales);
         } else if ($searchTerm) {
-            $tables = ['prestamos', 'users', 'equipos', 'asignaturas'];
-            $fields = [
-                'prestamos' => ['estado'],
-                'users' => ['name', 'lastname'],
-                'equipos' => [],
-                'asignaturas' => ['nombre'],
-            ];
-            $joins = [
-                [
-                    'table' => 'users',
-                    'firstKey' => 'prestamos.user_id',
-                    'secondKey' => 'users.id',
-                ],
-                [
-                    'table' => 'equipos',
-                    'firstKey' => 'prestamos.id',
-                    'secondKey' => 'equipos.prestamo_id',
-                ],
-                [
-                    'table' => 'asignaturas',
-                    'firstKey' => 'prestamos.asignatura_id',
-                    'secondKey' => 'asignaturas.id',
-                ],
-            ];
+            //Los parametros de filtros se configuran directamente en los modelos
 
-            $prestamos = Prestamo::searchQuery($searchTerm, $tables, $fields, $joins);
+            $prestamos = Prestamo::searchQuery($searchTerm);
             return new Collection($prestamos, $prestamosTotales);
 
         } else {
@@ -78,7 +55,7 @@ class PrestamoController extends Controller
                 }
             }
 
-            $prestamos = $prestamos->orderBy('id', 'desc')->paginate()->appends($request->query());
+            $prestamos = $prestamos->orderBy('id', 'desc')->paginate($entriesPerPage)->appends($request->query());
             return new Collection($prestamos, $prestamosTotales);
         }
     }
@@ -97,7 +74,6 @@ class PrestamoController extends Controller
      */
     public function store(StorePrestamoRequest $request)
     {
-
         return new PrestamoResource(Prestamo::create($request->all()));
     }
 
@@ -128,9 +104,9 @@ class PrestamoController extends Controller
     {
         try {
             $prestamo->update($request->all());
-            return response()->json(['icon' => 'success', 'title' => 'Actualización exitosa', 'text' => 'Prestamo actualizado correctamente', 'id' => $prestamo->id]);
+            return response()->json(['icon' => 'success', 'title' => 'Actualización exitosa', 'text' => 'Prestamo actualizado correctamente', 'id' => $prestamo->id], 200);
         } catch (\Throwable $e) {
-            return response()->json(['icon' => 'error', 'title' => 'Actualización fallida', 'text' => 'Ocurrió un error al intentar actualizar el préstamo']);
+            return response()->json(['icon' => 'error', 'title' => 'Actualización fallida', 'text' => 'Ocurrió un error al intentar actualizar el préstamo'], 500);
         }
     }
 
