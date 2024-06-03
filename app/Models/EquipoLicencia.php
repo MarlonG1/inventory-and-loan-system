@@ -14,6 +14,6 @@ class EquipoLicencia extends Model
 
 //    public function equipo()
 //    {
-//        return $this->belongsTo(Equipo::class);
+//        return $this->belongsTo(Inventario::class);
 //    }
 }

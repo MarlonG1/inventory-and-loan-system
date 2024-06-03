@@ -10,13 +10,14 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('equipos', function (Blueprint $table) {
+        Schema::create('inventario', function (Blueprint $table) {
             $table->id();
             $table->foreignId('prestamo_id')->nullable()->constrained()->onDelete('set null');
-            $table->string('marca');
+            $table->string('marca')->nullable();
+            $table->string('tipo')->nullable();
             $table->string('modelo');
             $table->string('identificador');
-            $table->string('estado')->default('Disponible');
+            $table->string('estado')->nullable();
             $table->string('observaciones')->nullable();
             $table->string('imagen')->nullable();
             $table->timestamps();
@@ -28,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipos');
+        Schema::dropIfExists('inventario');
     }
 };

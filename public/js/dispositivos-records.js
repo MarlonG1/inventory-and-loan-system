@@ -1,12 +1,12 @@
 let currentPage = 0;
 
 document.addEventListener('DOMContentLoaded', async function () {
-    await getPrestamosFromAPI(1);
+    await getEquiposFromAPI(1);
 
     document.getElementById('entradasPorPagina').addEventListener('change', async function () {
         const entriesPerPage = this.value;
         localStorage.setItem('entriesPerPage', entriesPerPage);
-        await getPrestamosFromAPI(1);
+        await getEquiposFromAPI(1);
     });
 
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 event.preventDefault();
 
                 const nuevaPagina = parseInt(event.target.getAttribute("data-page"));
-                await getPrestamosFromAPI(nuevaPagina);
+                await getEquiposFromAPI(nuevaPagina);
                 currentPage = nuevaPagina;
             }
         });
@@ -44,25 +44,25 @@ document.addEventListener('DOMContentLoaded', async function () {
                 document.getElementById("limpiarBusqueda").style.display = "none"
             }
 
-            await getPrestamosFromAPI(currentPage, searchTerm);
+            await getEquiposFromAPI(currentPage, searchTerm);
         });
 
-        await getPrestamosFromAPI(1);
+        await getEquiposFromAPI(1);
     } catch (error) {
         console.error("Error al cargar datos:", error);
     }
 });
 
-async function getPrestamosFromAPI(page, searchTerm = '') {
+async function getEquiposFromAPI(page, searchTerm = '') {
     const entriesPerPage = document.getElementById('entradasPorPagina').value = localStorage.getItem('entriesPerPage') === null ? 5 : localStorage.getItem('entriesPerPage');
 
     if (page === null) {
         return;
     }
 
-    const filters = `include=asignatura,user,inventario&page=${page}&searchTerm=${searchTerm}&entriesPerPage=${entriesPerPage}`;
+    const filters = `include=prestamo&tipo[eq]=Dispositivo&page=${page}&searchTerm=${searchTerm}&entriesPerPage=${entriesPerPage}`;
     try {
-        const response = await PrestamoAPI.getPrestamos(filters);
+        const response = await InventarioAPI.getData(filters);
         const entriesPerPageContainer = document.getElementById('entriesPerPageContainer');
         const searchInfo = document.getElementById('searchInfo');
 
@@ -77,13 +77,13 @@ async function getPrestamosFromAPI(page, searchTerm = '') {
             searchInfo.innerHTML = `Resultados de la búsqueda: <b>${response.count}</b>`;
         }
 
-        setTablePrestamos(response);
+        setTable(response);
     } catch (error) {
         console.error("Error al cargar datos:", error);
     }
 }
 
-function setTablePrestamos(datadb) {
+function setTable(datadb) {
     cleanTable();
     datadb.data.forEach((prestamo, index) => {
         newRow(prestamo);
@@ -117,12 +117,12 @@ function setEntriesPerPage(total) {
 
 function setHeaderInfo(totales) {
     document.getElementById("cantidadDeRegistros").innerHTML =
-        `<a href="#" id="totalActivos" class="px-3 m-0 activo" style="border-radius:10px 0px 0px 10px;"><i class="fa-solid fa-circle fa-2xs"></i> Activos ${totales.totalDeActivos}</a>` +
-        `<a href="#" id="totalPendientes" class="px-3 m-0 pendiente"><i class="fa-solid fa-circle fa-2xs"></i> Pendientes ${totales.totalDePendientes}</a>` +
-        `<a href="#" id="totalFinalizados" class="px-3 m-0 finalizado" style="border-radius:0px 10px 10px 0px;"><i class="fa-solid fa-circle fa-2xs"></i> Finalizados ${totales.totalDeFinalizados}</a>`;
+        `<a href="#" id="totalDisponibles" class="px-3 m-0 activo" style="border-radius:10px 0px 0px 10px;"><i class="fa-solid fa-circle fa-2xs"></i> Disponibles ${totales.totalDeDisponibles}</a>` +
+        `<a href="#" id="totalReparacion" class="px-3 m-0 reparacion"><i class="fa-solid fa-circle fa-2xs"></i> En reparación ${totales.totalDeEnReparacion}</a>` +
+        `<a href="#" id="totalOcupados" class="px-3 m-0 finalizado" style="border-radius:0px 10px 10px 0px;"><i class="fa-solid fa-circle fa-2xs"></i> Ocupados ${totales.totalDeOcupados}</a>`;
 }
 
-function newRow(prestamo) {
+function newRow(dispositivos) {
     const row = document.querySelector(".row-template").cloneNode(true);
     const tbody = document.querySelector('.customtable');
 
@@ -131,38 +131,32 @@ function newRow(prestamo) {
 
     const valueMapping = {
         '.id': 'id',
+        '.brand': 'marca',
+        '.model': 'modelo',
+        '.identifier': 'identificador',
     }
 
     Object.entries(valueMapping).forEach(([selector, property]) => {
-        row.querySelector(selector).textContent = prestamo[property];
+        row.querySelector(selector).textContent = dispositivos[property];
     });
 
-
-    const date = prestamo.fecha_prestamo.split("-").reverse().join("/");
-    const startTime = prestamo.hora_inicio.slice(0, -3);
-    const endTime = prestamo.hora_fin.slice(0, -3);
     const estadoElement = row.querySelector(".estado");
+    estadoElement.innerHTML = '<i class="fa-solid fa-circle fa-2xs my-auto mr-1"></i>' + dispositivos.estado;
+    estadoElement.classList.remove("activo", "finalizado", "reparacion");
 
-    estadoElement.innerHTML = '<i class="fa-solid fa-circle fa-2xs my-auto mr-1"></i>' + prestamo.estado;
-    estadoElement.classList.remove("activo", "finalizado", "pendiente");
-    estadoElement.classList.add(prestamo.estado.toLowerCase());
-
-    if (prestamo.motivo === null){
-        row.querySelector('.report-ticket').style.display = '';
-        row.querySelector('.report-ticket').href = `/ticket/${prestamo.id}`
+    const statusMapping = {
+        'Disponible': 'activo',
+        'En reparación': 'reparacion',
+        'Ocupado': 'finalizado'
     }
 
-    row.querySelector('.report-pdf').href = `/pdf/${prestamo.id}`
-    row.querySelector('.completeName').innerText = `${prestamo.user.name} ${prestamo.user.lastname}`;
-    row.querySelector('.course').innerText = `${prestamo.asignatura.nombre}`;
-    row.querySelector('.type').innerText = prestamo.user.type;
-    row.querySelector(".requestDate").textContent = date;
-    row.querySelector(".time").textContent = `${startTime} - ${endTime}`;
-    row.querySelector('.open-reason-modal').addEventListener("click", () => showReasonModal(prestamo.id, prestamo.motivo));
-    row.querySelector('.open-chageStatus-modal').addEventListener("click", () => showChangeStatusModal(prestamo.id));
-    row.querySelector('.open-delete-modal').addEventListener("click", () => showDeleteModal(prestamo.id));
-    row.querySelector('.open-computers-modal').addEventListener("click", () => showComputersModal(prestamo));
-    row.querySelector('.open-edit-modal').addEventListener("click", () => showEditModal(prestamo));
+    estadoElement.classList.add(statusMapping[dispositivos.estado]);
+    row.querySelector('.open-changePhoto-modal').addEventListener("click", () => showChangePhotoModal(dispositivos));
+    row.querySelector('.open-viewObser-modal').addEventListener("click", () => showObservationsModal(dispositivos.id, dispositivos.observaciones));
+    row.querySelector('.open-changeStatus-modal').addEventListener("click", () => showChangeStatusModal(dispositivos.id, dispositivos.estado));
+    row.querySelector('.open-delete-modal').addEventListener("click", () => showDeleteModal(dispositivos.id));
+    row.querySelector('.open-prestamos-modal').addEventListener("click", () => showPrestamoModal(dispositivos));
+    row.querySelector('.open-edit-modal').addEventListener("click", () => showEditModal(dispositivos));
 
     tbody.appendChild(row);
 }
@@ -210,7 +204,17 @@ function setModalElements(modalID, elements, data) {
     $(modalID).modal("show");
 }
 
-function showComputersModal(prestamo) {
+function showChangePhotoModal(equipo) {
+    const elements = ['id'];
+    setModalElements("#changePhoto", elements, [equipo.id]);
+    const timestamp = new Date().getTime();
+    document.querySelector("#current-imagen").src = `${equipo.imagen}?t=${timestamp}`;
+
+    const form =  document.getElementById('changePhotoForm');
+    form.action = `inventario/change-inventory-photo/${equipo.id}`
+}
+
+function showPrestamoModal(dispositivo) {
     const tbody = document.querySelector('.report-tbody');
     const rowTemplate = document.querySelector(".report-row-template")
     const noResults = document.querySelector('.report-row-sin-resultados');
@@ -221,24 +225,23 @@ function showComputersModal(prestamo) {
         }
     });
 
-    if (prestamo.inventario.length === 0) {
+    if (dispositivo.prestamo === null) {
         noResults.style.display = '';
         return;
     }
 
     noResults.style.display = 'none';
-    prestamo.inventario.forEach((equipo) => {
-        const row = document.querySelector(".report-row-template").cloneNode(true);
-        row.classList.remove('report-row-template')
-        row.style.display = '';
 
-        row.querySelector('.id').innerText = equipo.id;
-        row.querySelector('.equipo').innerText = `${equipo.marca} ${equipo.modelo}`;
-        row.querySelector('.identifcador').innerText = equipo.identificador;
-        row.querySelector('.estado').innerText = equipo.estado
+    const row = document.querySelector(".report-row-template").cloneNode(true);
+    row.classList.remove('report-row-template')
+    row.style.display = '';
 
-        tbody.appendChild(row);
-    });
+    row.querySelector('.id').innerText = dispositivo.prestamo.id;
+    row.querySelector('.estado').innerText = `${dispositivo.prestamo.estado}`;
+    row.querySelector('.fecha').innerText = dispositivo.prestamo.fecha_prestamo.split('-').reverse().join('/');
+    row.querySelector('.estado').innerText = dispositivo.prestamo.estado
+
+    tbody.appendChild(row);
 }
 
 function showDeleteModal(id) {
@@ -249,14 +252,20 @@ function showDeleteModal(id) {
         e.preventDefault();
         const formData = new FormData(this);
         $(`#delete`).modal("hide");
-        Alerts.showToastAlert(await PrestamoAPI.deletePrestamo(id));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await InventarioAPI.deleteData(id));
+        await getEquiposFromAPI(currentPage);
     });
 }
 
-function showChangeStatusModal(id) {
+function showChangeStatusModal(id, estado) {
     const elements = ["id"];
     setModalElements('#changeStatus', elements, [id]);
+
+    document.getElementById('estado').querySelectorAll('option').forEach(option => {
+        if (option.value === estado) {
+            option.selected = true;
+        }
+    });
 
     document.getElementById('changeStatusForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -264,44 +273,47 @@ function showChangeStatusModal(id) {
         $(`#changeStatus`).modal("hide");
         const id = formData.get('id');
 
-        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await InventarioAPI.patchData(id, formData));
+        await getEquiposFromAPI(currentPage);
     });
 }
 
-function showReasonModal(id, motivo) {
+function showObservationsModal(id, observations) {
     const elements = ['id'];
-    tinymce.get("motivo").setContent(motivo);
+    tinymce.get("observations").setContent(observations);
 
-    setModalElements('#viewReason', elements, [id]);
+    setModalElements('#viewObser', elements, [id]);
 
-    document.getElementById('viewReasonForm').addEventListener('submit', async function (e) {
+    document.getElementById('viewObserForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-        $(`#viewReason`).modal("hide");
+        $(`#viewObser`).modal("hide");
 
         const formData = new FormData(this);
-        formData.set('motivo', tinymce.get('motivo').getContent());
+        formData.set('observaciones', tinymce.get('observations').getContent());
         const id = formData.get('id');
 
-        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await InventarioAPI.patchData(id, formData));
+        await getEquiposFromAPI(currentPage);
     });
 }
 
-function showEditModal(prestamo) {
-    const elements = ['id', 'fechaPrestamo', 'horaInicio', 'horaFin'];
-    tinymce.get("motivo-edit").setContent(prestamo.motivo);
-    const ids = prestamo.inventario.map(equipo => equipo.id);
+function showEditModal(equipo) {
+    const elements = ['id', 'modelo', 'identificador'];
+    tinymce.get("observaciones-edit").setContent(equipo.observaciones);
 
-    document.getElementById('nuevo-equipo-container').innerHTML = '';
-    document.getElementById('cantidad').value = null;
+    document.getElementById('estado-edit').querySelectorAll('option').forEach(option => {
+        if (option.value === equipo.estado) {
+            option.selected = true;
+        }
+    });
 
-    $('#userId').selectpicker('val', prestamo.user_id + "");
-    $('#aulaId').selectpicker('val', prestamo.aula_id + "");
-    $('#carreraId').selectpicker('val', prestamo.carrera_id + "");
-    $('#asignaturaId').selectpicker('val', prestamo.asignatura_id + "");
-    setModalElements("#edit", elements, [prestamo.id, prestamo.fecha_prestamo, prestamo.hora_inicio, prestamo.hora_fin]);
-    setEquiposToEdit(ids);
+    document.getElementById('marca').querySelectorAll('option').forEach(option => {
+        if (option.value === equipo.marca) {
+            option.selected = true;
+        }
+    });
+
+    setModalElements("#edit", elements, [equipo.id, equipo.modelo, equipo.identificador]);
 
     document.getElementById('editForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -309,11 +321,11 @@ function showEditModal(prestamo) {
 
         const formData = new FormData(this);
         const id = formData.get('id');
-        formData.set('motivo', tinymce.get('motivo-edit').getContent());
+        formData.set('observaciones', tinymce.get('observaciones-edit').getContent());
+        formData.set('tipo', 'Dispositivo');
 
-        await linkEquiposToPrestamo(prestamo.id);
-        Alerts.showToastAlert(await PrestamoAPI.putPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await InventarioAPI.putData(id, formData));
+        await getEquiposFromAPI(currentPage);
     });
 }
 
@@ -323,14 +335,6 @@ tinymce.init({
     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     height: 250
 });
-
-async function unlinkEquipo(id) {
-    let formData = new FormData();
-    formData.append('prestamo_id', null);
-    formData.append('estado', 'Disponible');
-
-    return await EquipoAPI.patchEquipo(id, formData);
-}
 
 function showDeleteAlert(id) {
     Swal.fire({
@@ -343,33 +347,20 @@ function showDeleteAlert(id) {
         confirmButtonText: 'Sí, borrarlo!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            const response = await unlinkEquipo(id);
+            const response = await unlickLicencia(id);
             $(`#edit`).modal("hide");
             Alerts.showToastAlert(response);
-            await getPrestamosFromAPI(currentPage);
+            await getEquiposFromAPI(currentPage);
         }
     });
 }
-
-async function linkEquiposToPrestamo(idPrestamo) {
-    let formData = new FormData();
-    formData.set('prestamoId', idPrestamo);
-    formData.set('estado', 'Ocupado');
-
-    const equipos = document.querySelectorAll('select.equipo');
-
-    equipos.forEach(equipo => {
-        EquipoAPI.patchEquipo(equipo.value, formData);
-    });
-}
-
 async function cleanSearchInput() {
 
     document.querySelector(".busqueda").value = "";
     document.querySelector("#entriesPerPageContainer").style.display = "";
     document.querySelector('#searchInfo').style.display = 'none';
     document.getElementById("limpiarBusqueda").style.display = "none";
-    await getPrestamosFromAPI(1);
+    await getEquiposFromAPI(1);
 }
 
 

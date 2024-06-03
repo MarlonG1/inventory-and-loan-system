@@ -27,14 +27,14 @@ class Prestamo extends Model implements ISearch
     ];
 
     protected $model = self::class;
-    protected $relations = ['user', 'equipos', 'asignatura'];
+    protected $relations = ['user', 'inventario', 'asignatura'];
 
     //Atributos usados para la busqueda
-    protected array $tables = ['prestamos', 'users', 'equipos', 'asignaturas'];
+    protected array $tables = ['prestamos', 'users', 'inventario', 'asignaturas'];
     protected array $fields = [
         'prestamos' => ['estado'],
         'users' => ['name', 'lastname'],
-        'equipos' => [],
+        'inventario' => [],
         'asignaturas' => ['nombre'],
     ];
 
@@ -45,9 +45,9 @@ class Prestamo extends Model implements ISearch
             'secondKey' => 'users.id',
         ],
         [
-            'table' => 'equipos',
+            'table' => 'inventario',
             'firstKey' => 'prestamos.id',
-            'secondKey' => 'equipos.prestamo_id',
+            'secondKey' => 'inventario.prestamo_id',
         ],
         [
             'table' => 'asignaturas',
@@ -67,9 +67,9 @@ class Prestamo extends Model implements ISearch
         return $this->belongsTo(Aula::class);
     }
 
-    public function equipos() : HasMany
+    public function inventario() : HasMany
     {
-        return $this->hasMany(Equipo::class);
+        return $this->hasMany(Inventario::class);
     }
 
     public function asignatura() : BelongsTo

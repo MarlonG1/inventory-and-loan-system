@@ -27,7 +27,6 @@ class UpdatePrestamoRequest extends FormRequest
             return [
                 'userId' => ['required'],
                 'aulaId' => ['required'],
-                'carreraId' => ['required'],
                 'asignaturaId' => ['required'],
                 'fechaPrestamo' => ['required'],
                 'horaInicio' => ['required'],
@@ -37,7 +36,6 @@ class UpdatePrestamoRequest extends FormRequest
             return [
                 'userId' => ['sometimes', 'required'],
                 'aulaId' => ['sometimes', 'required'],
-                'carreraId' => ['sometimes', 'required'],
                 'asignaturaId' => ['sometimes', 'required'],
                 'estado' => ['sometimes', 'required', Rule::in(['Activo', 'Pendiente', 'Finalizado'])],
                 'fechaPrestamo' => ['sometimes', 'required'],
@@ -49,8 +47,8 @@ class UpdatePrestamoRequest extends FormRequest
 
     protected function prepareForValidation() : void
     {
-        $camposRequest = ['userId', 'aulaId', 'carreraId', 'asignaturaId', 'fechaPrestamo', 'horaInicio', 'horaFin'];
-        $camposBD = ['user_id', 'aula_id', 'carrera_id', 'asignatura_id', 'fecha_prestamo', 'hora_inicio', 'hora_fin'];
+        $camposRequest = ['userId', 'aulaId', 'asignaturaId', 'fechaPrestamo', 'horaInicio', 'horaFin'];
+        $camposBD = ['user_id', 'aula_id', 'asignatura_id', 'fecha_prestamo', 'hora_inicio', 'hora_fin'];
 
         foreach ($camposRequest as $key => $value) {
             if ($this->$value) {

@@ -63,7 +63,7 @@
                                                                 data-live-search="true">
                                                             <option value="" selected disabled>Seleccione el equipo
                                                             </option>
-                                                            @foreach($equipos as $equipo)
+                                                            @foreach($inventarios as $equipo)
                                                                 <option
                                                                     value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}}
                                                                     ({{$equipo->identificador}})
@@ -81,21 +81,7 @@
                                         <textarea id="motivo" name="motivo"
                                                   placeholder="Ingrese el motivo de la solicitud" value=""></textarea>
                                     </div>
-                                    <div class="form-group">
-                                        <small class="form-text text-muted">Carrera</small>
-                                        <select name="carreraId" id="carreraId"
-                                                class="selectpicker input_textual form-control"
-                                                data-live-search="true">
-                                            <option value="" selected disabled>Seleccione la asignatura
-                                            </option>
-                                            @foreach($carreras as $carrera)
-                                                <option
-                                                    value="{{$carrera->id}}">{{$carrera->nombre}}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
+                                    <div class="form-group pt-2">
                                         <small class="form-text text-muted">Asignatura</small>
                                         <select name="asignaturaId" id="asignaturaId"
                                                 class="selectpicker input_textual form-control"
@@ -103,9 +89,11 @@
                                             <option value="" selected disabled>Seleccione la asignatura
                                             </option>
                                             @foreach($asignaturas as $asignatura)
-                                                <option
-                                                    value="{{$asignatura->id}}">{{$asignatura->nombre}}
-                                                </option>
+                                                @if($asignatura->carrera_id === auth()->user()->carrera_id)
+                                                    <option
+                                                        value="{{$asignatura->id}}">{{$asignatura->nombre}}
+                                                    </option>
+                                                @endif
                                             @endforeach
                                         </select>
                                     </div>
@@ -177,7 +165,7 @@
                             <small class="form-text text-muted">Equipo #${i}</small>
                             <select name="equipo${i}" id="equipo${i}" class="equipo input_textual form-control" data-live-search="true">
                                 <option value="" selected disabled>Seleccione el equipo</option>
-                                @foreach($equipos as $equipo)
+                                @foreach($inventarios as $equipo)
                     <option value="{{$equipo->id}}">{{$equipo->marca . ' ' . $equipo->modelo}} ({{$equipo->identificador}})</option>
                                 @endforeach
                     </select>

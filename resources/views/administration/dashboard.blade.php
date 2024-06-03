@@ -57,10 +57,10 @@
                 <div class="card card-stats">
                     <div class="card-header card-header-info card-header-icon">
                         <div class="card-icon">
-                            <i class="fa-solid fa-memory"></i>
+                            <i class="fa-solid fa-camera"></i>
                         </div>
-                        <p class="card-category">Componentes</p>
-                        <h3 class="card-title" id="totalComponentes">0</h3>
+                        <p class="card-category">Dispositivos</p>
+                        <h3 class="card-title" id="totalDispositivos">0</h3>
                     </div>
                     <div class="card-footer">
                         <div class="stats">
@@ -116,7 +116,7 @@
             departamentosObj[item.departamento] = item.cantidad;
         });
     </script>
-    <script type="module" src="js/dashboard.js"></script>
-    <script type="text/javascript" src="js/mapa/mapdata.js"></script>
-    <script type="text/javascript" src="js/mapa/countrymap.js"></script>
+    <script type="module" src="{{asset('js/dashboard.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/mapa/mapdata.js')}}"></script>
+    <script type="text/javascript" src="{{asset('js/mapa/countrymap.js')}}"></script>
 @endsection

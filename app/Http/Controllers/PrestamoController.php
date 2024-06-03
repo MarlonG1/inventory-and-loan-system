@@ -18,6 +18,13 @@ use function PHPUnit\Framework\isEmpty;
 
 class PrestamoController extends Controller
 {
+
+    public function __construct()
+    {
+        // Aplicar throttling solo al método index
+        $this->middleware('throttle:500,1')->only('index');
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -82,9 +89,14 @@ class PrestamoController extends Controller
      */
     public function show(Prestamo $prestamo)
     {
-        $includeEquipos = request()->query('includeEquipos');
-        if ($includeEquipos) {
-            return new PrestamoResource($prestamo->loadMissing('equipos'));
+        $include = request()->query('include');
+
+        if ($include !== '') {
+            $include = explode(',', request()->query('include', ''));
+            foreach ($include as $relation) {
+                $prestamo = $prestamo->loadMissing($relation);
+            }
+            return new PrestamoResource($prestamo);
         }
         return new PrestamoResource($prestamo);
     }
@@ -113,12 +125,12 @@ class PrestamoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($id)
+    public function destroy(Prestamo $prestamo)
     {
         try {
-            $prestamo = Prestamo::with('equipos')->findOrFail($id);
+            $prestamo = $prestamo->loadMissing('inventario');
 
-            foreach ($prestamo->equipos as $equipo) {
+            foreach ($prestamo->inventario as $equipo) {
                 $equipo->estado = "Disponible";
                 $equipo->save();
             }

@@ -2,12 +2,13 @@
 
 namespace App\Http\Filters;
 
-class EquipoFilter extends ApiFilter
+class InventarioFilter extends ApiFilter
 {
     protected $safeParams=[
         'prestamoId' => ['eq', 'gt', 'lt'],
         'marca' => ['eq', 'ne'],
         'modelo' => ['eq', 'ne'],
+        'tipo' => ['eq', 'ne'],
         'identificador' => ['eq', 'ne'],
         'estado' => ['eq'],
         'unidad' => ['eq', 'gt', 'lt', 'gte', 'lte'],

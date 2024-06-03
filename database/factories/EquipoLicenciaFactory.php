@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\Equipo;
+use App\Models\Inventario;
 use App\Models\Licencia;
 use Illuminate\Database\Eloquent\Factories\Factory;
 

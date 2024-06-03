@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class StoreEquipoRequest extends FormRequest
+class StoreInventarioRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,8 +26,9 @@ class StoreEquipoRequest extends FormRequest
             'prestamoId' => ['nullable'],
             'marca' => ['required'],
             'modelo' => ['required'],
+            'tipo' => ['required', Rule::in(['Equipo', 'Accesorio', 'Dispositivo'])],
             'identificador' => ['required'],
-            'estado' => ['required', Rule::in(['Disponible', 'En reparación', 'Ocupado'])],
+            'estado' => ['required'],
             'observaciones' => ['required'],
         ];
     }

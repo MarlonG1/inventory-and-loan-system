@@ -31,17 +31,17 @@ class PrestamoHistoricoSeeder extends Seeder
             ]);
 
             $prestamoHistorico->save();
-            $equipos = $prestamo->equipos;
+            $equipos = $prestamo->inventario;
 
-            $equiposConDatos = [];
-            foreach ($equipos as $equipo) {
-                $equiposConDatos[$equipo->id] = [
-                    'estado' => $equipo->estado,
-                    'identificador' => $equipo->identificador,
+            $inventarioConDatos = [];
+            foreach ($equipos as $inventa) {
+                $inventarioConDatos[$inventa->id] = [
+                    'estado' => $inventa->estado,
+                    'identificador' => $inventa->identificador,
                 ];
             }
 
-            $prestamoHistorico->equipos()->attach($equiposConDatos);
+            $prestamoHistorico->inventario()->attach($inventarioConDatos);
         });
     }
 

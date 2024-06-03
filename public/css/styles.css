@@ -89,7 +89,7 @@ body {
 }
 
 .btn-registro {
-    padding: 7px 10px;
+    padding: 11px 10px !important;
 }
 
 
@@ -406,6 +406,19 @@ body {
     text-decoration: none;
 }
 
+.reparacion {
+    background: #bbd0ee;
+    color: #265eb6;
+}
+
+.reparacion:hover {
+    color: #083477;
+    background: #9fbce3;
+    text-decoration: none;
+}
+
+
+
 .pendiente:after {
     background: #767d79;
 }
@@ -443,13 +456,13 @@ body {
 }
 
 .inactiva {
-    background: #f1c8c8;
-    color: #9c3030;
+    background: #f1e3c8;
+    color: #9c6630;
 }
 
 .inactiva:hover {
-    color: #9b2222;
-    background: #f2bbbb;
+    color: #794b19;
+    background: #e7cbab;
     text-decoration: none;
 }
 

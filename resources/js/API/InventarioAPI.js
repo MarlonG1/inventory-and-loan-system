@@ -1,39 +1,39 @@
 import {buildRoute} from "./RouteBuilder.js";
 
-export default class EquipoAPI {
+export default class InventarioAPI {
 
-    endPointName = 'equipos';
+    endPointName = 'inventario';
 
     constructor(httpClient) {
         this.httpClient = httpClient;
     }
 
-    async getEquipos(filters = '') {
+    async getData(filters = '') {
         const route = buildRoute(this.endPointName, null, filters);
         return this.httpClient.get(route);
     }
 
-    async getEquipoById(id, filters = '') {
+    async getDataById(id, filters = '') {
         const route = buildRoute(this.endPointName, id, filters);
         return this.httpClient.get(route);
     }
 
-    async postEquipo(formData) {
+    async postData(formData) {
         const route = buildRoute(this.endPointName);
         return this.httpClient.post(route, formData)
     }
 
-    async putEquipo(id, formData) {
+    async putData(id, formData) {
         const route = buildRoute(this.endPointName, id);
         return this.httpClient.put(route, formData)
     }
 
-    async patchEquipo(id, formData) {
+    async patchData(id, formData) {
         const route = buildRoute(this.endPointName, id);
         return this.httpClient.patch(route, formData)
     }
 
-    async deleteEquipo(id) {
+    async deleteData(id) {
         const route = buildRoute(this.endPointName, id);
         return this.httpClient.delete(route);
     }
@@ -65,7 +65,7 @@ export default class EquipoAPI {
             let formData = new FormData();
             formData.set('prestamoId', idPrestamo);
             formData.set('estado', 'Ocupado');
-            await this.patchEquipo(idEquipo, formData)
+            await this.patchData(idEquipo, formData)
         } catch (e) {
             console.log(e)
         }

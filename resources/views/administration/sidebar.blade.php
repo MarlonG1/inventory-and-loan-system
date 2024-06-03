@@ -11,41 +11,62 @@
         @endif
 
         <li>
-            <a href="#homeSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
-                    class="fa-solid fa-table mr-3"></i>Registros</a>
-            <ul class="collapse list-unstyled" id="homeSubmenu">
+            <a href="#prestamosInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                    class="fa-solid fa-handshake mr-2"></i></i>Prestamos</a>
+            <ul class="collapse list-unstyled" id="prestamosInfo">
                 <li>
                     <a href="{{route('registros-prestamos')}}">Registros de prestamos</a>
-                </li>
-                <li>
-                    <a href="#">Registros de usuarios</a>
-                </li>
-                <li>
-                    <a href="#">Registros de equipos</a>
-                </li>
-                <li>
-                    <a href="#">Registros de licencias</a>
                 </li>
             </ul>
         </li>
         <li>
-            <a href="#"><i class="fa-solid fa-chart-line mr-2"></i> Estadísticas</a>
+            <a href="#usersInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                    class="fa-solid fa-users mr-2"></i>
+                Usuarios</a>
+            <ul class="collapse list-unstyled" id="usersInfo">
+                <li>
+                    <a href="{{route('registros-usuarios')}}">Registros de usuarios</a>
+                </li>
+            </ul>
         </li>
         <li>
-            <a href="#"><i class="fa-solid fa-computer mr-2"></i>
+            <a href="#equiposInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                    class="fa-solid fa-computer mr-2"></i>
                 Equipos</a>
+            <ul class="collapse list-unstyled" id="equiposInfo">
+                <li>
+                    <a href="{{route('registros-equipos')}}">Registros de equipos</a>
+                </li>
+            </ul>
         </li>
         <li>
-            <a href="#"><i class="fa-solid fa-compact-disc mr-2"></i>
-                Licencias</a>
+            <a href="#licenciasInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                        class="fa-solid fa-compact-disc mr-2"></i>
+                    Licencias</a>
+                <ul class="collapse list-unstyled" id="licenciasInfo">
+                    <li>
+                        <a href="{{route('registros-licencias')}}">Registros de licencias</a>
+                    </li>
+                </ul>
         </li>
         <li>
-            <a href="#"><i
-                    class="fa-regular fa-keyboard mr-2"></i></i> Accesorios</a>
+            <a href="#accesoriosInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i
+                    class="fa-regular fa-keyboard mr-2"></i>
+                Accesorios</a>
+            <ul class="collapse list-unstyled" id="accesoriosInfo">
+                <li>
+                    <a href="{{route('registros-accesorios')}}">Registros de accesorios</a>
+                </li>
+            </ul>
         </li>
         <li>
-            <a href="#"><i class="fa-solid fa-memory mr-2"></i>
-                Componentes</a>
+            <a href="#dispositivosInfo" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa-solid fa-camera mr-2"></i>
+                Dispositivos</a>
+            <ul class="collapse list-unstyled" id="dispositivosInfo">
+                <li>
+                    <a href="{{route('registros-dispositivos')}}">Registros de dispositivos</a>
+                </li>
+            </ul>
         </li>
     </ul>
 </nav>

@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\SendEmailController;
+use App\Http\Controllers\UserController;
 use App\Models\User;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\LoginController;
@@ -59,12 +61,25 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //Reportes
     Route::get('/pdf/{prestamoId}', [VistaController::class, 'viewPdf'])->name('pdf');
+    Route::get('/ticket/{prestamoId}', [VistaController::class, 'viewTicket'])->name('ticket');
+});
 
-    //Administracion
+Route::group(['prefix' => 'administracion', 'namespace' => 'App\Http\Controllers', 'middleware' => 'auth:web'], function () {
     Route::get('/nuevo-equipo', [VistaController::class, 'nuevo_equipo'])->name('nuevo-equipo');
     Route::get('/pos', [VistaController::class, 'pointOfSale'])->name('pos');
     Route::get('/dashboard', [VistaController::class, 'dashboard'])->name('dashboard');
+
+    Route::post('users/change-photo/{id}', [UserController::class, 'changePhoto'])->name('change-photo');
+    Route::post('/users/register-new-user', [UserController::class, 'registerNewUser'])->name('register-new-user');
+    Route::post('inventario/change-inventory-photo/{id}', [InventarioController::class, 'changePhoto'])->name('change-inventory-photo');
+    Route::post('/inventario/register-new-inventory', [InventarioController::class, 'registerNewData'])->name('register-new-inventory');
+
     Route::get('/registros-prestamos', [VistaController::class, 'registro_prestamos'])->name('registros-prestamos');
+    Route::get('/registros-usuarios', [VistaController::class, 'registro_usuarios'])->name('registros-usuarios');
+    Route::get('/registros-equipos', [VistaController::class, 'registro_equipos'])->name('registros-equipos');
+    Route::get('/registros-licencias', [VistaController::class, 'registro_licencias'])->name('registros-licencias');
+    Route::get('/registros-accesorios', [VistaController::class, 'registro_accesorios'])->name('registros-accesorios');
+    Route::get('/registros-dispositivos', [VistaController::class, 'registro_dispositivo'])->name('registros-dispositivos');
 });
 
 Route::get('/setup', function () {

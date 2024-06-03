@@ -26,7 +26,7 @@ class PrestamoResource extends JsonResource
             'asignatura' => new AsignaturaResource($this->whenLoaded('asignatura')),
             'carrera' => new CarreraResource($this->whenLoaded('carrera')),
             'user' => new UserResource($this->whenLoaded('user')),
-            'equipos' => EquipoResource::collection($this->whenLoaded('equipos'))
+            'equipos' => InventarioResource::collection($this->whenLoaded('equipos'))
         ];
     }
 }

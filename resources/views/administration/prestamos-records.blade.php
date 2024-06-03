@@ -113,12 +113,16 @@
                                                 </td>
                                                 <td class="administration">
                                                     <div class="d-flex justify-content-center">
-                                                        <a href="/pdf/541" target="_blank"
-                                                           class="btn btn-registro btn-primario-claro mr-1 ampliar report text-white">
+                                                        <a href="#" target="_blank"  style="display: none"
+                                                           class="btn btn-primario-claro mr-1 ampliar report-ticket text-white">
+                                                            <i class="fa-solid fa-ticket-simple"></i>
+                                                        </a>
+                                                        <a href="#" target="_blank"
+                                                           class="btn btn-primario-claro mr-1 ampliar report-pdf text-white">
                                                             <i class="fa-solid fa-file-pdf"></i>
                                                         </a>
                                                         <button type="button"
-                                                                class="btn text-white btn-registro btn-info px-2 ampliar open-computers-modal"
+                                                                class="btn text-white btn-info mr-1 px-2 ampliar open-computers-modal"
                                                                 data-toggle="modal" data-target="#showComputers">
                                                             <i class="fa-solid fa-laptop"></i>
                                                         </button>
@@ -127,17 +131,17 @@
                                                 <td>
                                                     <div class="d-flex">
                                                         <button type="button"
-                                                                class="btn btn-registro btn-info mr-1 ampliar open-edit-modal"
+                                                                class="btn btn-info mr-1 ampliar open-edit-modal"
                                                                 data-toggle="modal" data-target="#edit">
                                                             <i class="fa-solid fa-pencil"></i>
                                                         </button>
                                                         <button type="button"
-                                                                class="btn btn-registro btn-details mr-1 ampliar open-reason-modal"
+                                                                class="btn btn-details mr-1 ampliar open-reason-modal"
                                                                 data-toggle="modal" data-target="#viewReason">
                                                             <i class="fa-solid fa-book"></i>
                                                         </button>
                                                         <button type="button"
-                                                                class="btn btn-danger btn-registro mr-1 ampliar open-delete-modal"
+                                                                class="btn btn-danger mr-1 ampliar open-delete-modal"
                                                                 data-toggle="modal" data-target="#delete">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </button>
@@ -373,20 +377,6 @@
                                                           value=""></textarea>
                                             </div>
                                             <div class="form-group">
-                                                <small class="form-text text-muted">Carrera</small>
-                                                <select name="carreraId" id="carreraId"
-                                                        class="selectpicker input_textual form-control"
-                                                        data-live-search="true">
-                                                    <option value="" selected disabled>Seleccione la asignatura
-                                                    </option>
-                                                    @foreach($carreras as $carrera)
-                                                        <option
-                                                            value="{{$carrera->id}}">{{$carrera->nombre}}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="form-group">
                                                 <small class="form-text text-muted">Asignatura</small>
                                                 <select name="asignaturaId" id="asignaturaId"
                                                         class="selectpicker input_textual form-control"
@@ -522,7 +512,7 @@ ${!camposDobles ? '</div>' : ''}`
                     $(elemento).selectpicker();
                     $(elemento).selectpicker('val', equiposId[cont] + "");
                     // $(elemento).prop('disabled', true);
-                    // $(elemento).selectpicker('refresh');
+                    $(elemento).selectpicker('refresh');
                     cont++;
                 });
             });

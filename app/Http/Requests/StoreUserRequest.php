@@ -23,7 +23,8 @@ class StoreUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'departamento_id' => ['required'],
+            'departamentoId' => ['required'],
+            'carreraId' => ['required'],
             'name' => ['required'],
             'lastname' => ['required'],
             'email' => ['required', 'email'],
@@ -39,7 +40,8 @@ class StoreUserRequest extends FormRequest
     {
         $this->merge([
             'birth_date' => $this->birthDate,
-            'departamento_id' => $this->departamento_id,
+            'departamento_id' => $this->departamentoId,
+            'carrera_id' => $this->carreraId,
         ]);
     }
 }

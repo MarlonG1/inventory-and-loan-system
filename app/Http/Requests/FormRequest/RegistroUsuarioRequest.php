@@ -15,6 +15,7 @@ class RegistroUsuarioRequest extends FormRequest
     {
         return [
             'departamentoId' => 'required',
+            'carreraId' => 'required',
             'name' => ['required', 'string', 'max:255'],
             'lastname' => ['required', 'string', 'max:255'],
             'phone' => 'required',

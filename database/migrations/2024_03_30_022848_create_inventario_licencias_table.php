@@ -10,13 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('equipo_licencias', function (Blueprint $table) {
+        Schema::create('inventario_licencias', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('equipo_id')->constrained();
-            $table->foreignId('licencia_id')->constrained();
+            $table->unsignedBigInteger('inventario_id');
+            $table->unsignedBigInteger('licencia_id');
             $table->date('fecha_asignacion')->default(now());
             $table->string('estado')->default('Activa');
             $table->string('observaciones')->nullable()->default('Ninguna');
+
+            $table->foreign('inventario_id')->references('id')->on('inventario')->onDelete('cascade');
+            $table->foreign('licencia_id')->references('id')->on('licencias')->onDelete('cascade');
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipo_licencias');
+        Schema::dropIfExists('inventario_licencias');
     }
 };

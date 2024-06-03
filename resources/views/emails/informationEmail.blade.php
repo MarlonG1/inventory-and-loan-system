@@ -1,7 +1,7 @@
 @php
     $user = $emailData->user;
     $fechaPrestamo = date('d/m/y', strtotime($emailData->fecha_prestamo));
-    $cantidad = count($emailData->equipos);
+    $cantidad = count($emailData->inventario);
     $aula = $emailData->aula
 @endphp
     <!DOCTYPE html>
@@ -499,7 +499,7 @@
                         </tr>
                     </table>
                     <section style="padding-bottom: 40px; padding-top: 20px">
-                        <h3 class="section-title" style="font-size: 22px;text-align: center">Equipos solicitados</h3>
+                        <h3 class="section-title" style="font-size: 22px;text-align: center">Dispositivos solicitados</h3>
                         <table class="customTable" width="80%" style="border: 0">
                             <thead>
                             <tr>
@@ -511,7 +511,7 @@
                             @for($i = 0, $j = 1; $i < $cantidad; $i++, ++$j)
                                 <tr>
                                     <td>{{$j}}</td>
-                                    <td>{{$emailData->equipos[$i]->marca . ' ' . $emailData->equipos[$i]->modelo}}</td>
+                                    <td>{{$emailData->inventario[$i]->marca . ' ' . $emailData->inventario[$i]->modelo}}</td>
                                 </tr>
                             @endfor
                             </tbody>
@@ -519,7 +519,7 @@
                         <table width="80%">
                             <tr>
                                 <td>
-                                    <p>Cantidad de equipos prestados: {{$cantidad}}</p>
+                                    <p>Cantidad de dispositivos prestados: {{$cantidad}}</p>
                                 </td>
                             </tr>
                         </table>

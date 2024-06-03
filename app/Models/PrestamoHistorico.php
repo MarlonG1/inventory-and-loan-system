@@ -9,14 +9,14 @@ class PrestamoHistorico extends Model
 {
     use HasFactory;
 
-    public function equipos()
+    public function inventario()
     {
-//        return $this->belongsToMany(Equipo::class, 'equipo_prestamo_historico');
+//        return $this->belongsToMany(Inventario::class, 'equipo_prestamo_historico');
 
-        return $this->belongsToMany(Equipo::class)
+        return $this->belongsToMany(Inventario::class)
             ->withPivot('prestamo_historico_id', 'equipo_id', 'estado', 'identificador');
 
-//        return $this->belongsToMany(Equipo::class,
+//        return $this->belongsToMany(Inventario::class,
 //            'equipo_prestamo_historico',
 //            'prestamo_historico_id',
 //            'equipo_id')

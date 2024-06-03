@@ -56,6 +56,7 @@ class LoginController extends Controller
 
         User::create([
             'departamento_id' => $request->input('departamentoId'),
+            'carrera_id' => $request->input('carreraId'),
             'name' => $request->input('name'),
             'lastname' => $request->input('lastname'),
             'phone' => $request->input('phone'),
@@ -64,7 +65,7 @@ class LoginController extends Controller
             'carnet' => $request->input('carnet'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'image' => 'img/profile-photos/' . $fileName,
+            'image' => '/img/profile-photos/' . $fileName,
         ]);
 
         return redirect('/login');
@@ -73,10 +74,10 @@ class LoginController extends Controller
     protected function generateToken($user)
     {
         if($user->type === 'Administrador'){
-            return $user->createToken('auth_cookie', ['create', 'update', 'delete'], now()->addHours(2))->plainTextToken;
+            return $user->createToken('auth_cookie', ['create', 'update', 'delete'], now()->addDays(2))->plainTextToken;
         }
 
-        return $user->createToken('auth_cookie', ['create'], now()->addHours(2))->plainTextToken;
+        return $user->createToken('auth_cookie', ['create'], now()->addDay())->plainTextToken;
     }
 
 }

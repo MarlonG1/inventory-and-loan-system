@@ -26,6 +26,7 @@ class UpdateUserRequest extends FormRequest
         if ($method == 'PUT') {
             return [
                 'departamento_id' => ['required'],
+                'carrera_id' => ['required'],
                 'name' => ['required'],
                 'lastname' => ['required'],
                 'email' => ['required', 'email'],
@@ -38,6 +39,7 @@ class UpdateUserRequest extends FormRequest
         } else {
             return [
                 'departamento_id' => ['sometimes', 'required'],
+                'carrera_id' => ['sometimes', 'required'],
                 'name' => ['sometimes', 'required'],
                 'lastname' => ['sometimes', 'required'],
                 'email' => ['sometimes', 'required', 'email'],
@@ -52,8 +54,8 @@ class UpdateUserRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $camposRequest = ['birthDate', 'departamentoId'];
-        $camposBD = ['birth_date', 'departamento_id'];
+        $camposRequest = ['birthDate', 'departamentoId', 'carreraId'];
+        $camposBD = ['birth_date', 'departamento_id', 'carrera_id'];
 
         foreach ($camposRequest as $key => $value) {
             if ($this->$value) {

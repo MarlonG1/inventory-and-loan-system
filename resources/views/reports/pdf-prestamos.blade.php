@@ -3,7 +3,7 @@
     $dt = $dt->format('d/m/y');
     $user = $prestamo->user;
     $fechaPrestamo = date('d/m/y', strtotime($prestamo->fecha_prestamo));
-    $cantidad = count($prestamo->equipos);
+    $cantidad = count($prestamo->inventario);
     $aula = $prestamo->aula
 @endphp
 
@@ -222,7 +222,13 @@ mpdf-->
                     <p class="details-name"> {{$user->name . ' ' . $user->lastname}}</p>
                     <p class="details-info">
                         <svg width="15px" class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <!--!Font Awesome Free 6.5.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.-->
+                            <path fill="#535353"
+                                  d="M243.4 2.6l-224 96c-14 6-21.8 21-18.7 35.8S16.8 160 32 160v8c0 13.3 10.7 24 24 24H456c13.3 0 24-10.7 24-24v-8c15.2 0 28.3-10.7 31.3-25.6s-4.8-29.9-18.7-35.8l-224-96c-8-3.4-17.2-3.4-25.2 0zM128 224H64V420.3c-.6 .3-1.2 .7-1.8 1.1l-48 32c-11.7 7.8-17 22.4-12.9 35.9S17.9 512 32 512H480c14.1 0 26.5-9.2 30.6-22.7s-1.1-28.1-12.9-35.9l-48-32c-.6-.4-1.2-.7-1.8-1.1V224H384V416H344V224H280V416H232V224H168V416H128V224zM256 64a32 32 0 1 1 0 64 32 32 0 1 1 0-64z"/>
+                        </svg>
+                        {{'  ' . $user->carrera->nombre}}
+                    </p>
+                    <p class="details-info">
+                        <svg width="15px" class="details-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             <path fill="#535353"
                                   d="M48 64C21.5 64 0 85.5 0 112c0 15.1 7.1 29.3 19.2 38.4L236.8 313.6c11.4 8.5 27 8.5 38.4 0L492.8 150.4c12.1-9.1 19.2-23.3 19.2-38.4c0-26.5-21.5-48-48-48H48zM0 176V384c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V176L294.4 339.2c-22.8 17.1-54 17.1-76.8 0L0 176z"/>
                         </svg>
@@ -255,12 +261,12 @@ mpdf-->
     </section>
 
     <section>
-        <h2 class="section-title" style="font-size: 22px">Equipos Prestados</h2>
+        <h2 class="section-title" style="font-size: 22px">Dispositivos Prestados</h2>
         <table>
             <thead>
             <tr>
                 <th>#</th>
-                <th>Equipo</th>
+                <th>Dispositivos</th>
                 <th>Identificador</th>
                 <th>Observaciones</th>
             </tr>
@@ -269,14 +275,14 @@ mpdf-->
             @for($i = 0, $j = 1; $i < $cantidad; $i++, ++$j)
                 <tr>
                     <td>{{$j}}</td>
-                    <td>{{$prestamo->equipos[$i]->marca . ' ' . $prestamo->equipos[$i]->modelo}}</td>
-                    <td>{{$prestamo->equipos[$i]->identificador}}</td>
-                    <td>{{$prestamo->equipos[$i]->observaciones}}</td>
+                    <td>{{$prestamo->inventario[$i]->marca . ' ' . $prestamo->inventario[$i]->modelo}}</td>
+                    <td>{{$prestamo->inventario[$i]->identificador}}</td>
+                    <td>{{$prestamo->inventario[$i]->observaciones}}</td>
                 </tr>
             @endfor
             </tbody>
         </table>
-        <p>Cantidad de equipos prestados: {{$cantidad}}</p>
+        <p>Cantidad de dispositivos prestados: {{$cantidad}}</p>
     </section>
 </div>
 </body>

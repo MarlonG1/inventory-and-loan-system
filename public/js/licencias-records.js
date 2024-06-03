@@ -1,12 +1,12 @@
 let currentPage = 0;
 
 document.addEventListener('DOMContentLoaded', async function () {
-    await getPrestamosFromAPI(1);
+    await getLicenciasFromAPI(1);
 
     document.getElementById('entradasPorPagina').addEventListener('change', async function () {
         const entriesPerPage = this.value;
         localStorage.setItem('entriesPerPage', entriesPerPage);
-        await getPrestamosFromAPI(1);
+        await getLicenciasFromAPI(1);
     });
 
 
@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 event.preventDefault();
 
                 const nuevaPagina = parseInt(event.target.getAttribute("data-page"));
-                await getPrestamosFromAPI(nuevaPagina);
+                await getLicenciasFromAPI(nuevaPagina);
                 currentPage = nuevaPagina;
             }
         });
@@ -44,25 +44,25 @@ document.addEventListener('DOMContentLoaded', async function () {
                 document.getElementById("limpiarBusqueda").style.display = "none"
             }
 
-            await getPrestamosFromAPI(currentPage, searchTerm);
+            await getLicenciasFromAPI(currentPage, searchTerm);
         });
 
-        await getPrestamosFromAPI(1);
+        await getLicenciasFromAPI(1);
     } catch (error) {
         console.error("Error al cargar datos:", error);
     }
 });
 
-async function getPrestamosFromAPI(page, searchTerm = '') {
+async function getLicenciasFromAPI(page, searchTerm = '') {
     const entriesPerPage = document.getElementById('entradasPorPagina').value = localStorage.getItem('entriesPerPage') === null ? 5 : localStorage.getItem('entriesPerPage');
 
     if (page === null) {
         return;
     }
 
-    const filters = `include=asignatura,user,inventario&page=${page}&searchTerm=${searchTerm}&entriesPerPage=${entriesPerPage}`;
+    const filters = `include=inventario&page=${page}&searchTerm=${searchTerm}&entriesPerPage=${entriesPerPage}`;
     try {
-        const response = await PrestamoAPI.getPrestamos(filters);
+        const response = await LicenciaAPI.getLicencias(filters);
         const entriesPerPageContainer = document.getElementById('entriesPerPageContainer');
         const searchInfo = document.getElementById('searchInfo');
 
@@ -77,13 +77,13 @@ async function getPrestamosFromAPI(page, searchTerm = '') {
             searchInfo.innerHTML = `Resultados de la búsqueda: <b>${response.count}</b>`;
         }
 
-        setTablePrestamos(response);
+        setTable(response);
     } catch (error) {
         console.error("Error al cargar datos:", error);
     }
 }
 
-function setTablePrestamos(datadb) {
+function setTable(datadb) {
     cleanTable();
     datadb.data.forEach((prestamo, index) => {
         newRow(prestamo);
@@ -117,12 +117,15 @@ function setEntriesPerPage(total) {
 
 function setHeaderInfo(totales) {
     document.getElementById("cantidadDeRegistros").innerHTML =
-        `<a href="#" id="totalActivos" class="px-3 m-0 activo" style="border-radius:10px 0px 0px 10px;"><i class="fa-solid fa-circle fa-2xs"></i> Activos ${totales.totalDeActivos}</a>` +
-        `<a href="#" id="totalPendientes" class="px-3 m-0 pendiente"><i class="fa-solid fa-circle fa-2xs"></i> Pendientes ${totales.totalDePendientes}</a>` +
-        `<a href="#" id="totalFinalizados" class="px-3 m-0 finalizado" style="border-radius:0px 10px 10px 0px;"><i class="fa-solid fa-circle fa-2xs"></i> Finalizados ${totales.totalDeFinalizados}</a>`;
+        `<a href="#" id="totalDisponibles" class="px-3 m-0 activo" style="border-radius:10px 0px 0px 10px;"><i class="fa-solid fa-circle fa-2xs"></i> Disponibles ${totales.totalDeActivas}</a>` +
+        `<a href="#" id="totalPorRenovar" class="px-3 m-0 reparacion"><i class="fa-solid fa-circle fa-2xs"></i> En reparación ${totales.totalPorRenovar}</a>` +
+        `<a href="#" id="totalInactivas" class="px-3 m-0 inactiva"><i class="fa-solid fa-circle fa-2xs"></i> Inactivas ${totales.totalDeInactivas}</a>` +
+        `<a href="#" id="totalVencidas" class="px-3 m-0 finalizado" style="border-radius:0px 10px 10px 0px;"><i class="fa-solid fa-circle fa-2xs"></i> Ocupados ${totales.totalVencidas}</a>`;
+
+    document.getElementById('open-add-modal').addEventListener("click", () => showAddModal());
 }
 
-function newRow(prestamo) {
+function newRow(licencia) {
     const row = document.querySelector(".row-template").cloneNode(true);
     const tbody = document.querySelector('.customtable');
 
@@ -131,39 +134,35 @@ function newRow(prestamo) {
 
     const valueMapping = {
         '.id': 'id',
+        '.name': 'nombre',
+        '.type': 'tipo',
+        '.units': 'unidad',
     }
 
     Object.entries(valueMapping).forEach(([selector, property]) => {
-        row.querySelector(selector).textContent = prestamo[property];
+        row.querySelector(selector).textContent = licencia[property];
     });
 
+    const date = licencia.fecha_vencimiento.split("-").reverse().join("/");
 
-    const date = prestamo.fecha_prestamo.split("-").reverse().join("/");
-    const startTime = prestamo.hora_inicio.slice(0, -3);
-    const endTime = prestamo.hora_fin.slice(0, -3);
     const estadoElement = row.querySelector(".estado");
+    estadoElement.innerHTML = '<i class="fa-solid fa-circle fa-2xs my-auto mr-1"></i>' + licencia.estado;
+    estadoElement.classList.remove("activo", "finalizado", "reparacion", "inactiva");
 
-    estadoElement.innerHTML = '<i class="fa-solid fa-circle fa-2xs my-auto mr-1"></i>' + prestamo.estado;
-    estadoElement.classList.remove("activo", "finalizado", "pendiente");
-    estadoElement.classList.add(prestamo.estado.toLowerCase());
-
-    if (prestamo.motivo === null){
-        row.querySelector('.report-ticket').style.display = '';
-        row.querySelector('.report-ticket').href = `/ticket/${prestamo.id}`
+    const statusMapping = {
+        'Activa': 'activo',
+        'Por renovar': 'reparacion',
+        'Inactiva': 'inactiva',
+        'Vencida': 'finalizado'
     }
 
-    row.querySelector('.report-pdf').href = `/pdf/${prestamo.id}`
-    row.querySelector('.completeName').innerText = `${prestamo.user.name} ${prestamo.user.lastname}`;
-    row.querySelector('.course').innerText = `${prestamo.asignatura.nombre}`;
-    row.querySelector('.type').innerText = prestamo.user.type;
-    row.querySelector(".requestDate").textContent = date;
-    row.querySelector(".time").textContent = `${startTime} - ${endTime}`;
-    row.querySelector('.open-reason-modal').addEventListener("click", () => showReasonModal(prestamo.id, prestamo.motivo));
-    row.querySelector('.open-chageStatus-modal').addEventListener("click", () => showChangeStatusModal(prestamo.id));
-    row.querySelector('.open-delete-modal').addEventListener("click", () => showDeleteModal(prestamo.id));
-    row.querySelector('.open-computers-modal').addEventListener("click", () => showComputersModal(prestamo));
-    row.querySelector('.open-edit-modal').addEventListener("click", () => showEditModal(prestamo));
-
+    estadoElement.classList.add(statusMapping[licencia.estado]);
+    row.querySelector('.date').textContent = date;
+    row.querySelector('.open-viewObser-modal').addEventListener("click", () => showObservationsModal(licencia.id, licencia.observaciones));
+    row.querySelector('.open-chageStatus-modal').addEventListener("click", () => showChangeStatusModal(licencia.id, licencia.estado));
+    row.querySelector('.open-delete-modal').addEventListener("click", () => showDeleteModal(licencia.id));
+    row.querySelector('.open-computers-modal').addEventListener("click", () => showComputersModal(licencia));
+    row.querySelector('.open-edit-modal').addEventListener("click", () => showEditModal(licencia));
     tbody.appendChild(row);
 }
 
@@ -210,7 +209,7 @@ function setModalElements(modalID, elements, data) {
     $(modalID).modal("show");
 }
 
-function showComputersModal(prestamo) {
+function showComputersModal(licencia) {
     const tbody = document.querySelector('.report-tbody');
     const rowTemplate = document.querySelector(".report-row-template")
     const noResults = document.querySelector('.report-row-sin-resultados');
@@ -221,20 +220,20 @@ function showComputersModal(prestamo) {
         }
     });
 
-    if (prestamo.inventario.length === 0) {
+    if (licencia.inventario.length === 0) {
         noResults.style.display = '';
         return;
     }
 
     noResults.style.display = 'none';
-    prestamo.inventario.forEach((equipo) => {
+    licencia.inventario.forEach((equipo) => {
         const row = document.querySelector(".report-row-template").cloneNode(true);
         row.classList.remove('report-row-template')
         row.style.display = '';
 
         row.querySelector('.id').innerText = equipo.id;
         row.querySelector('.equipo').innerText = `${equipo.marca} ${equipo.modelo}`;
-        row.querySelector('.identifcador').innerText = equipo.identificador;
+        row.querySelector('.identificador').innerText = equipo.identificador;
         row.querySelector('.estado').innerText = equipo.estado
 
         tbody.appendChild(row);
@@ -249,14 +248,20 @@ function showDeleteModal(id) {
         e.preventDefault();
         const formData = new FormData(this);
         $(`#delete`).modal("hide");
-        Alerts.showToastAlert(await PrestamoAPI.deletePrestamo(id));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await LicenciaAPI.deleteLicencia(id));
+        await getLicenciasFromAPI(currentPage);
     });
 }
 
-function showChangeStatusModal(id) {
+function showChangeStatusModal(id, estado) {
     const elements = ["id"];
     setModalElements('#changeStatus', elements, [id]);
+
+    document.getElementById('estado').querySelectorAll('option').forEach(option => {
+        if (option.value === estado) {
+            option.selected = true;
+        }
+    });
 
     document.getElementById('changeStatusForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -264,44 +269,51 @@ function showChangeStatusModal(id) {
         $(`#changeStatus`).modal("hide");
         const id = formData.get('id');
 
-        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await LicenciaAPI.patchLicencia(id, formData));
+        await getLicenciasFromAPI(currentPage);
     });
 }
 
-function showReasonModal(id, motivo) {
+function showObservationsModal(id, observations) {
     const elements = ['id'];
-    tinymce.get("motivo").setContent(motivo);
+    tinymce.get("observations").setContent(observations);
 
-    setModalElements('#viewReason', elements, [id]);
+    setModalElements('#viewObser', elements, [id]);
 
-    document.getElementById('viewReasonForm').addEventListener('submit', async function (e) {
+    document.getElementById('viewObserForm').addEventListener('submit', async function (e) {
         e.preventDefault();
-        $(`#viewReason`).modal("hide");
+        $(`#viewObser`).modal("hide");
 
         const formData = new FormData(this);
-        formData.set('motivo', tinymce.get('motivo').getContent());
+        formData.set('observaciones', tinymce.get('observations').getContent());
         const id = formData.get('id');
 
-        Alerts.showToastAlert(await PrestamoAPI.patchPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await LicenciaAPI.patchLicencia(id, formData));
+        await getLicenciasFromAPI(currentPage);
     });
 }
 
-function showEditModal(prestamo) {
-    const elements = ['id', 'fechaPrestamo', 'horaInicio', 'horaFin'];
-    tinymce.get("motivo-edit").setContent(prestamo.motivo);
-    const ids = prestamo.inventario.map(equipo => equipo.id);
+function showEditModal(licencia) {
+    const elements = ['id', 'nombre', 'fechaAdquisicion', 'unidad', 'fechaVencimiento', 'clave'];
+    tinymce.get("observations-edit").setContent(licencia.observaciones);
+    // const ids = equipo.equipos.map(equipo => equipo.id);
+    //
+    // document.getElementById('nuevo-equipo-container').innerHTML = '';
+    // document.getElementById('cantidad').value = null;
 
-    document.getElementById('nuevo-equipo-container').innerHTML = '';
-    document.getElementById('cantidad').value = null;
+    setModalElements("#edit", elements, [ licencia.id, licencia.nombre, licencia.fecha_adquisicion, licencia.unidad, licencia.fecha_vencimiento, licencia.clave]);
+    // setEquiposToEdit(ids);
 
-    $('#userId').selectpicker('val', prestamo.user_id + "");
-    $('#aulaId').selectpicker('val', prestamo.aula_id + "");
-    $('#carreraId').selectpicker('val', prestamo.carrera_id + "");
-    $('#asignaturaId').selectpicker('val', prestamo.asignatura_id + "");
-    setModalElements("#edit", elements, [prestamo.id, prestamo.fecha_prestamo, prestamo.hora_inicio, prestamo.hora_fin]);
-    setEquiposToEdit(ids);
+    document.getElementById('estado-edit').querySelectorAll('option').forEach(option => {
+        if (option.value === licencia.estado) {
+            option.selected = true;
+        }
+    });
+    document.getElementById('tipo').querySelectorAll('option').forEach(option => {
+        if (option.value === licencia.tipo) {
+            option.selected = true;
+        }
+    });
 
     document.getElementById('editForm').addEventListener('submit', async function (e) {
         e.preventDefault();
@@ -309,11 +321,21 @@ function showEditModal(prestamo) {
 
         const formData = new FormData(this);
         const id = formData.get('id');
-        formData.set('motivo', tinymce.get('motivo-edit').getContent());
 
-        await linkEquiposToPrestamo(prestamo.id);
-        Alerts.showToastAlert(await PrestamoAPI.putPrestamo(id, formData));
-        await getPrestamosFromAPI(currentPage);
+        Alerts.showToastAlert(await LicenciaAPI.putLicencia(id, formData));
+        await getLicenciasFromAPI(currentPage);
+    });
+}
+
+function showAddModal() {
+    document.getElementById('addForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        $(`#add`).modal("hide");
+
+        Alerts.showToastAlert(await LicenciaAPI.postLicencia(formData));
+        await getLicenciasFromAPI(currentPage);
     });
 }
 
@@ -323,14 +345,6 @@ tinymce.init({
     toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
     height: 250
 });
-
-async function unlinkEquipo(id) {
-    let formData = new FormData();
-    formData.append('prestamo_id', null);
-    formData.append('estado', 'Disponible');
-
-    return await EquipoAPI.patchEquipo(id, formData);
-}
 
 function showDeleteAlert(id) {
     Swal.fire({
@@ -343,23 +357,11 @@ function showDeleteAlert(id) {
         confirmButtonText: 'Sí, borrarlo!'
     }).then(async (result) => {
         if (result.isConfirmed) {
-            const response = await unlinkEquipo(id);
+            const response = await unlickLicencia(id);
             $(`#edit`).modal("hide");
             Alerts.showToastAlert(response);
-            await getPrestamosFromAPI(currentPage);
+            await getLicenciasFromAPI(currentPage);
         }
-    });
-}
-
-async function linkEquiposToPrestamo(idPrestamo) {
-    let formData = new FormData();
-    formData.set('prestamoId', idPrestamo);
-    formData.set('estado', 'Ocupado');
-
-    const equipos = document.querySelectorAll('select.equipo');
-
-    equipos.forEach(equipo => {
-        EquipoAPI.patchEquipo(equipo.value, formData);
     });
 }
 
@@ -369,7 +371,7 @@ async function cleanSearchInput() {
     document.querySelector("#entriesPerPageContainer").style.display = "";
     document.querySelector('#searchInfo').style.display = 'none';
     document.getElementById("limpiarBusqueda").style.display = "none";
-    await getPrestamosFromAPI(1);
+    await getLicenciasFromAPI(1);
 }
 
 

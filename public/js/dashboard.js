@@ -4,8 +4,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     const apiRoutes = [
         fetch(`/api/v1/prestamos?includeAll=true&fechaPrestamo[gt]=${lastYear}&fechaPrestamo[lt]=${currentYear}`),
-        fetch('/api/v1/equipos'),
         fetch('/api/v1/licencias'),
+        fetch('/api/v1/inventario?tipo[eq]=Equipo'),
+        fetch('/api/v1/inventario?tipo[eq]=Accesorio'),
+        fetch('/api/v1/inventario?tipo[eq]=Dispositivo'),
     ];
 
     try {
@@ -16,8 +18,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         const dataProcessed = {
             'prestamos': data[0],
-            'equipos': data[1],
-            'licencias': data[2],
+            'licencias': data[1],
+            'equipos': data[2],
+            'accesorios': data[3],
+            'dispositivos': data[4],
         }
 
         console.log(dataProcessed.prestamos)
@@ -25,6 +29,8 @@ document.addEventListener("DOMContentLoaded", async function () {
         const cardHeadersValue = {
             totalEquipos: dataProcessed.equipos.meta.total,
             totalLicencias: dataProcessed.licencias.meta.total,
+            totalAccesorios: dataProcessed.accesorios.meta.total,
+            totalDispositivos: dataProcessed.dispositivos.meta.total,
         };
 
         setCardsValues(cardHeadersValue);
@@ -37,6 +43,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 function setCardsValues(headers) {
     document.getElementById("totalEquipos").innerText = headers.totalEquipos;
     document.getElementById("totalLicencias").innerText = headers.totalLicencias;
+    document.getElementById("totalAccesorios").innerText = headers.totalAccesorios;
+    document.getElementById("totalDispositivos").innerText = headers.totalDispositivos;
 }
 
 function actualizarInformacion(prestamos) {

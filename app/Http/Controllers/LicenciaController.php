@@ -9,6 +9,7 @@ use App\Http\Resources\Collection;
 use App\Http\Resources\LicenciaResource;
 use App\Models\Licencia;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class LicenciaController extends Controller
 {
@@ -19,14 +20,38 @@ class LicenciaController extends Controller
     {
         $filter = new LicenciaFilter();
         $queryItems = $filter->transform($request);
-        $includeEquipos = $request->query('includeEquipos');
-        $licencias = Licencia::where($queryItems);
+        $searchTerm = $request->query('searchTerm');
+        $include = $request->query('include', '');
+        $includeAll = $request->query('includeAll');
+        $entriesPerPage = $request->query('entriesPerPage');
+        $licencia = Licencia::where($queryItems);
 
-        if ($includeEquipos) {
-            $licencias = $licencias->with('equipos');
+        $licenciasTotales = [
+            'totalDeActivas' => Licencia::where('estado', 'Activa')->count(),
+            'totalPorRenovar' => Licencia::where('estado', 'Por renovar')->count(),
+            'totalDeInactivas' => Licencia::where('estado', 'Inactiva')->count(),
+            'totalVencidas' => Licencia::where('estado', 'Vencida')->count(),
+        ];
+
+        if ($includeAll) {
+            $licencia = $licencia->orderBy('id', 'desc');
+            return new Collection($licencia->get(), $licenciasTotales);
+        } else if ($searchTerm) {
+            //Los parametros de filtros se configuran directamente en los modelos
+            $licencia = Licencia::searchQuery($searchTerm);
+            return new Collection($licencia, $licenciasTotales);
+        } else {
+
+            if ($include !== '') {
+                $include = explode(',', $request->query('include', ''));
+                foreach ($include as $relation) {
+                    $licencia = $licencia->with($relation);
+                }
+            }
+
+            $licencia = $licencia->orderBy('id', 'desc')->paginate($entriesPerPage)->appends($request->query());
+            return new Collection($licencia, $licenciasTotales);
         }
-
-        return new Collection($licencias->paginate()->appends($request->query()));
     }
 
     /**
@@ -42,7 +67,15 @@ class LicenciaController extends Controller
      */
     public function store(StoreLicenciaRequest $request)
     {
-        return new LicenciaResource(Licencia::create($request->all()));
+        try {
+            $licencia = Licencia::create($request->all());
+            $licencia->update([
+                'clave' => Hash::make($request->clave),
+            ]);
+            return response()->json(['icon' => 'success', 'title' => 'Creación exitosa', 'text' => 'Licencia creada correctamente'], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['icon' => 'error', 'title' => 'Creación fallida', 'text' => 'Ocurrió un error al intentar crear la licencia' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -50,11 +83,14 @@ class LicenciaController extends Controller
      */
     public function show(Licencia $licencia)
     {
-        $includeEquipos = request()->query('includeEquipos');
-        if ($includeEquipos){
-            return new LicenciaResource($licencia->loadMissing('equipos'));
+        $include = request()->query('include', '');
+        if ($include !== '') {
+            $include = explode(',', request()->query('include', ''));
+            foreach ($include as $relation) {
+                $licencia = $licencia->loadMissing($relation);
+            }
         }
-        return new LicenciaResource($licencia);
+        return new LicenciaFilter($licencia);
     }
 
     /**
@@ -70,7 +106,13 @@ class LicenciaController extends Controller
      */
     public function update(UpdateLicenciaRequest $request, Licencia $licencia)
     {
-        $licencia->update($request->all());
+        try {
+            $licencia->update($request->all());
+
+            return response()->json(['icon' => 'success', 'title' => 'Actualización exitosa', 'text' => 'Licencia actualizada correctamente'], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['icon' => 'error', 'title' => 'Actualización fallida', 'text' => 'Ocurrió un error al intentar actualizar la licencia' . $e->getMessage()], 500);
+        }
     }
 
     /**
@@ -78,6 +120,11 @@ class LicenciaController extends Controller
      */
     public function destroy(Licencia $licencia)
     {
-        //
+        try {
+            $licencia->delete();
+            return response()->json(['icon' => 'success', 'title' => 'Eliminación exitosa', 'text' => 'Licencia eliminada correctamente'], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['icon' => 'error', 'title' => 'Eliminación fallida', 'text' => 'Ocurrió un error al intentar eliminar la licencia'], 500);
+        }
     }
 }

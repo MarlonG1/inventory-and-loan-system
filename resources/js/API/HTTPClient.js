@@ -27,7 +27,7 @@ export default class HTTPClient {
             method: 'POST',
             headers: this.defaultHeaders,
             credentials: this.requestOptions.Credentials,
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(Object.fromEntries(formData)),
         }).then(response => {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
@@ -45,7 +45,7 @@ export default class HTTPClient {
             method: 'PUT',
             headers: this.defaultHeaders,
             credentials: this.requestOptions.Credentials,
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(Object.fromEntries(formData)),
         }).then(response => {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {
@@ -63,7 +63,7 @@ export default class HTTPClient {
             method: 'PATCH',
             headers: this.defaultHeaders,
             credentials: this.requestOptions.Credentials,
-            body: JSON.stringify(Object.fromEntries(formData))
+            body: JSON.stringify(Object.fromEntries(formData)),
         }).then(response => {
             const contentType = response.headers.get('content-type');
             if (contentType && contentType.includes('application/json')) {

@@ -49,12 +49,6 @@
                                                                value=""/>
                                                     </div>
                                                     <div class="d-flex">
-                                                        <div class="form-group col-sm-6 pl-0">
-                                                            <small class="form-text text-muted">Unidad</small>
-                                                            <input required type="text" name="unidad"
-                                                                   class="form-control"
-                                                                   placeholder="Ingrese la unidad del equipo" value=""/>
-                                                        </div>
                                                         <div class="form-group col-sm-6 pr-0">
                                                             <small class="form-text text-muted">Estado</small>
                                                             <select required class="form-control" name="estado">

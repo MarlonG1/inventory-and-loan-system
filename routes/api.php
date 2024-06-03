@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PrestamoController;
 use App\Http\Controllers\LicenciaController;
-use App\Http\Controllers\EquipoController;
+use App\Http\Controllers\InventarioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +30,9 @@ Route::group(['prefix' => 'v1', 'namespace' => 'App\Http\Controllers', 'middlewa
     Route::apiResource('prestamos', PrestamoController::class);
     Route::apiResource('historicos', PrestamoHistoricoController::class);
     Route::apiResource('licencias', LicenciaController::class);
-    Route::apiResource('equipos', EquipoController::class);
+    Route::apiResource('inventario', InventarioController::class);
     Route::apiResource('aulas', AulaController::class);
-    Route::Post('equipos/bulk', ['uses' => 'EquipoController@bulkStore']);
+    Route::Post('inventario/bulk', ['uses' => 'InventarioController@bulkStore']);
+    Route::get('users/destroy-with-prestamos/{user}', [UserController::class, 'destroyWithPrestamos']);
     Route::get('/send/informationEmail/{prestamoId}', [SendEmailController::class, 'send']);
 });

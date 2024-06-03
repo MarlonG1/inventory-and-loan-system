@@ -38,9 +38,23 @@
                     @endforeach
                 </select>
             </div>
-            <div class="form-group pb-2 col-xl-6 px-0"><input class="form-control" required name="carnet" type="text"
-                                                placeholder="Carnet">
+            <div class="form-group pb-2 col-xl-5 px-0">
+                <input class="form-control" required name="carnet" type="text"
+                                                              placeholder="Carnet">
             </div>
+        </div>
+        <div class="d-flex col-xl-12 px-0 pb-4">
+            <select name="carreraId" id="carreraId"
+                    class="selectpicker input_textual form-control"
+                    data-live-search="true">
+                <option value="" selected disabled>Departamento
+                </option>
+                @foreach($carreras as $carrera)
+                    <option
+                        value="{{$carrera->id}}">{{$carrera->nombre}}
+                    </option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group pb-2"><input class="form-control" required name="email" type="email"
                                             placeholder="Correo electrónico">

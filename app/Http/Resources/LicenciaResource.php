@@ -24,7 +24,7 @@ class LicenciaResource extends JsonResource
             'observaciones' => $this->observaciones,
             'fechaAdquisicion' => $this->fecha_adquisicion,
             'fechaVencimiento' => $this->fecha_vencimiento,
-            'equipos' => EquipoResource::collection($this->whenLoaded('equipos'))
+            'equipos' => InventarioResource::collection($this->whenLoaded('equipos'))
         ];
     }
 }

@@ -11,12 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('equipo_prestamo_historico', function (Blueprint $table) {
+        Schema::create('inventario_prestamo_historico', function (Blueprint $table) {
             $table->id();
             $table->foreignId('prestamo_historico_id')->constrained();
-            $table->foreignId('equipo_id')->constrained();
+            $table->unsignedBigInteger('inventario_id');
             $table->string('estado')->nullable();
             $table->string('identificador')->nullable();
+
+            $table->foreign('inventario_id')->references('id')->on('inventario')->onDelete('cascade');
+
         });
     }
 
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('equipo_prestamo_historico');
+        Schema::dropIfExists('inventario_prestamo_historico');
     }
 };

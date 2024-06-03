@@ -10,7 +10,7 @@
             @endif
         @endauth
         <a class="navbar-brand" href="/">
-            <img src="img/logo.png" alt="UNICAES" width="60" height=60">
+            <img src="{{asset('/img/logo.png')}}" alt="UNICAES" width="60" height=60">
         </a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
                 aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
@@ -50,7 +50,9 @@
                             </form>
                         </div>
                     </div>
-                    <a href="{{route('pos')}}"><i class="fa-solid fa-tv"></i></a>
+                    @if(auth()->user()->type === 'Administrador')
+                        <a href="{{route('pos')}}"><i class="fa-solid fa-tv"></i></a>
+                    @endif
                 @else
                     <a href="{{route('login')}}"><i class="fa-solid fa-user fa-xl ampliar mr-4"></i></a>
                 @endauth

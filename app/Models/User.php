@@ -40,10 +40,10 @@ class User extends Authenticatable implements ISearch
         'password' => 'hashed',
     ];
     //Atributos para la busqueda
-    protected $relations = ['departamento'];
-    protected array $tables = ['users', 'departamentos', 'carrreras'];
+    protected $relations = ['departamento', 'carrera'];
+    protected array $tables = ['users', 'departamentos', 'carreras'];
     protected array $fields = [
-        'users' => ['name', 'lastname'],
+        'users' => ['name', 'lastname', 'type'],
         'departamentos' => [],
         'carreras' => ['nombre'],
     ];

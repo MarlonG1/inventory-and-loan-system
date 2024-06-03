@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class EquipoResource extends JsonResource
+class InventarioResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,7 +24,8 @@ class EquipoResource extends JsonResource
             'unidad' => $this->unidad,
             'observaciones' => $this->observaciones,
             'imagen' => $this->imagen,
-            'licencias' => LicenciaResource::collection($this->whenLoaded('licencias'))
+            'licencias' => LicenciaResource::collection($this->whenLoaded('licencias')),
+            'prestamo' => new PrestamoResource($this->whenLoaded('prestamo')),
         ];
     }
 }

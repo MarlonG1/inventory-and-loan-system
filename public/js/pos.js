@@ -50,7 +50,7 @@ function showDeleteAlert(position) {
         if (result.isConfirmed) {
             selectedEquipo.splice(selectedEquipo.indexOf({numero: selectedEquipo[position].id}), 1);
             setEquipoIntoTable();
-            Alerts.showToastAlert({icon: 'success', title: 'Equipo eliminado con exito!'});
+            Alerts.showToastAlert({icon: 'success', title: 'Inventario eliminado con exito!'});
             $('#deleteModal').modal('hidden');
         }
     });
@@ -138,7 +138,7 @@ function setEquipoIntoTable() {
 
 async function getEquiposFromAPI(marca) {
     const filters = `marca[eq]=${marca}&estado[eq]=Disponible`
-    const reponse = await EquipoAPI.getEquipos(filters);
+    const reponse = await InventarioAPI.getData(filters);
     return reponse.data;
 }
 

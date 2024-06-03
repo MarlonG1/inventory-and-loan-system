@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             DepartamentoSeeder::class,
             UserSeeder::class,
             PrestamoSeeder::class,
-            EquipoSeeder::class,
+            InventarioSeeder::class,
             LicenciaSeeder::class,
             PrestamoHistoricoSeeder::class,
         ]);

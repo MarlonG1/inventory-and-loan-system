@@ -64,20 +64,6 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <small class="form-text text-muted">Carrera</small>
-                                <select name="carreraId" id="carreraId"
-                                        class="selectpicker input_textual form-control"
-                                        data-live-search="true">
-                                    <option value="" selected disabled>Seleccione la carrera
-                                    </option>
-                                    @foreach($carreras as $carrera)
-                                        <option
-                                            value="{{$carrera->id}}">{{$carrera->nombre}}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="form-group">
                                 <small class="form-text text-muted">Asignatura</small>
                                 <select name="asignaturaId" id="asignaturaId"
                                         class="selectpicker input_textual form-control"

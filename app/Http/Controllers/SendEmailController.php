@@ -10,7 +10,7 @@ class SendEmailController extends Controller
 {
     public function send($prestamoId){
         try {
-            $emailData = Prestamo::with ('equipos', 'aula', 'user')->findOrFail($prestamoId);
+            $emailData = Prestamo::with('inventario', 'aula', 'user')->findOrFail($prestamoId);
             Mail::to($emailData->user->email)->send(new InformationMail($emailData));
             return response()->json(['icon' => 'success', 'title' => 'Exito!', 'text' => 'Prestamo registrado correctamente, se envio un correo electronico a tu cuenta con los detalles']);
         } catch (\Exception $e){

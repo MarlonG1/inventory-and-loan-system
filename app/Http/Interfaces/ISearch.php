@@ -10,4 +10,3 @@ interface ISearch
     function getJoins(): array;
 }
 
-?>
