@@ -35,11 +35,19 @@ Route::get('/google-redirect/callback', function () {
         'lastname' => $user_google->user['family_name'],
         'email' => $user_google->email,
         'type' => 'Estudiante',
+        'carnet' => '0000-AA-000',
+        'phone' => '0000-0000',
+        'birth_date' => '2000-01-01',
+        'carrera_id' => 13,
+        'departamento_id' => 1,
         'image' => $user_google->avatar,
     ]);
 
+    $loginController = new LoginController();
+    $token = $loginController->generateToken($user);
+
     Auth::login($user);
-    return redirect('/');
+    return view('inicio', ['token' => $token]);
 });
 
 Route::group([],function () {

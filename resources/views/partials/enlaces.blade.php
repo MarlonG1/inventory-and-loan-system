@@ -17,8 +17,7 @@ https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.all.min.js
 https://cdn.jsdelivr.net/npm/sweetalert2@11.10.8/dist/sweetalert2.min.css
 " rel="stylesheet">
 <script src="https://kit.fontawesome.com/4e9e3f37c1.js" crossorigin="anonymous"></script>
-<script src="https://cdn.tiny.cloud/1/ph91f6tz1l9vs7kf4dww1lm02f1ldurpmbptsok9kpkzjoo9/tinymce/6/tinymce.min.js"
-        referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/t43cgi3uae0glnn2invl1kum8wq1unxpx0ndbx037k0bmcn7/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/css/bootstrap-select.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.14.0-beta2/js/bootstrap-select.min.js"></script>

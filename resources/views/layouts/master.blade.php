@@ -9,30 +9,39 @@
     <title>@yield('title')</title>
 </head>
 <body onload="hideLoading()">
-@include('partials.navbar')
 
-<div class="content-loading">
-    <div id="loading">
-        <div id="loader"></div>
+@if(!str_contains(Request::path(), '/pos'))
+    @include('partials.navbar')
+
+    <div class="content-loading">
+        <div id="loading">
+            <div id="loader"></div>
+        </div>
+
+        <div class="wrapper">
+            @auth
+                @if((auth()->user()->type === 'Administrador'))
+                    @include('administration.sidebar')
+                @endif
+            @endauth
+
+            @yield('content', 'inicio')
+        </div>
     </div>
 
-    <div class="wrapper">
-        @auth
-            @if((auth()->user()->type === 'Administrador'))
-                @include('administration.sidebar')
-            @endif
-        @endauth
+    @if (request()->getRequestUri() === '/')
+        @include('partials.carousel')
+    @endif
 
-        @yield('content', 'inicio')
-    </div>
-</div>
-
-@if (request()->getRequestUri() === '/')
-    @include('partials.carousel')
+    @include('partials.helpButton')
+    @include('partials.footer')
 @endif
 
-@include('partials.helpButton')
-@include('partials.footer')
+@if(str_contains(Request::path(), '/pos'))
+    @yield('content', 'inicio')
+@endif
+
+
 @yield('scripts')
 @vite(['resources/js/app.js'])
 <script src="{{asset('js/sidebar.js')}}"></script>

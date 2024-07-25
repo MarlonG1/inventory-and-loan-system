@@ -71,7 +71,7 @@ class LoginController extends Controller
         return redirect('/login');
     }
 
-    protected function generateToken($user)
+    public function generateToken($user)
     {
         if($user->type === 'Administrador'){
             return $user->createToken('auth_cookie', ['create', 'update', 'delete'], now()->addDays(2))->plainTextToken;

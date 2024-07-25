@@ -326,7 +326,7 @@
                             </div>
                             <div class="form-group col-sm-6 px-0">
                                 <small class="form-text text-muted">Tipo </small>
-                                <select required class="form-control" name="estado">
+                                <select required class="form-control" name="type">
                                     <option>Estudiante</option>
                                     <option>Docente</option>
                                     <option>Administrador</option>

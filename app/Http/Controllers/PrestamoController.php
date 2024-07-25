@@ -49,7 +49,6 @@ class PrestamoController extends Controller
             return new Collection($prestamos->get(), $prestamosTotales);
         } else if ($searchTerm) {
             //Los parametros de filtros se configuran directamente en los modelos
-
             $prestamos = Prestamo::searchQuery($searchTerm);
             return new Collection($prestamos, $prestamosTotales);
 

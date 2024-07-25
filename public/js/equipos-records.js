@@ -253,6 +253,8 @@ function showDeleteModal(id) {
         e.preventDefault();
         const formData = new FormData(this);
         $(`#delete`).modal("hide");
+        const id = formData.get('id');
+
         Alerts.showToastAlert(await InventarioAPI.deleteData(id));
         await getEquiposFromAPI(currentPage);
     });

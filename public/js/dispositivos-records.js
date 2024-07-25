@@ -251,6 +251,7 @@ function showDeleteModal(id) {
     document.getElementById('deleteForm').addEventListener('submit', async function (e) {
         e.preventDefault();
         const formData = new FormData(this);
+        const id = formData.get('id');
         $(`#delete`).modal("hide");
         Alerts.showToastAlert(await InventarioAPI.deleteData(id));
         await getEquiposFromAPI(currentPage);

@@ -49,9 +49,9 @@ function showDeleteAlert(position) {
     }).then(async (result) => {
         if (result.isConfirmed) {
             selectedEquipo.splice(selectedEquipo.indexOf({numero: selectedEquipo[position].id}), 1);
-            setEquipoIntoTable();
             Alerts.showToastAlert({icon: 'success', title: 'Inventario eliminado con exito!'});
             $('#deleteModal').modal('hidden');
+            setEquipoIntoTable();
         }
     });
 }
